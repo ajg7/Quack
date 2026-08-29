@@ -10,3 +10,9 @@ __pycache__/
 *.py[cod]
 *.egg-info/
 .pytest_cache/
+
+# Local planning notes
+docs/PLAN.md
+
+# Generated briefings
+briefings/
