@@ -13,15 +13,17 @@ if hasattr(sys.stdout, "reconfigure"):
 
 load_dotenv()
 
-MODEL = "claude-opus-5"
+MODEL = "claude-opus-5-5"
 MAX_TOKENS = 16000
 
 NOTION_API = "https://api.notion.com/v1"
 NOTION_VERSION = "2026-03-11"
 NOTION_TIMEOUT = 30
 
-AGONS_DATA_SOURCE_ID = "a23b7da0-e8f4-4a21-a648-e810261410a0"
-AGONS_DATABASE_ID = "632e329c-fa87-4ea9-bc9f-9868f6b5705e"
+AGOGE_DATA_SOURCE_ID = "a23b7da0-e8f4-4a21-a648-e810261410a0"
+AGOGE_DATABASE_ID = "632e329c-fa87-4ea9-bc9f-9868f6b5705e"
+
+AJ_GEBARA_PAGE_ID = "3cafbe79-a388-8024-be47-cd46e51f6f43"
 
 
 class ConfigError(RuntimeError):
