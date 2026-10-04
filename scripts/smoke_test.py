@@ -12,7 +12,7 @@ import sys
 import anthropic
 from dotenv import load_dotenv
 
-MODEL = "claude-opus-5"
+MODEL = "claude-opus-5-5"
 
 # Windows consoles default to cp1252, which mangles emoji in model output.
 if hasattr(sys.stdout, "reconfigure"):

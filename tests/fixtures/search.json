@@ -1,0 +1,666 @@
+[
+  {
+    "object": "data_source",
+    "id": "385fbe79-a388-80c0-bac9-000b9d183e35",
+    "cover": null,
+    "icon": null,
+    "created_time": "2026-06-20T03:21:00.000Z",
+    "created_by": {
+      "object": "user",
+      "id": "a6cf9c60-4aa2-47fc-8349-5161bd068660"
+    },
+    "last_edited_by": {
+      "object": "user",
+      "id": "a6cf9c60-4aa2-47fc-8349-5161bd068660"
+    },
+    "last_edited_time": "2026-09-14T04:31:00.000Z",
+    "title": [
+      {
+        "type": "text",
+        "text": {
+          "content": "Odysseys",
+          "link": null
+        },
+        "annotations": {
+          "bold": false,
+          "italic": false,
+          "strikethrough": false,
+          "underline": false,
+          "code": false,
+          "color": "default"
+        },
+        "plain_text": "Odysseys",
+        "href": null
+      }
+    ],
+    "description": [],
+    "is_inline": true,
+    "database_type": null,
+    "properties": {
+      "Ultimate": {
+        "id": "%3ENqR",
+        "name": "Ultimate",
+        "description": null,
+        "type": "select",
+        "select": {
+          "options": [
+            {
+              "id": "5676f2c4-ab0f-4cad-8e26-14e204612e68",
+              "name": "Staff Software Engineer (SE)",
+              "color": "purple",
+              "description": null
+            },
+            {
+              "id": "7770ed90-0a40-4fd3-b283-8ca64d9b391e",
+              "name": "Spreetail Engineer (SPREE)",
+              "color": "blue",
+              "description": null
+            },
+            {
+              "id": "41ebd69e-5359-4ef7-9a7c-86f54336cf02",
+              "name": "Leader (LEAD)",
+              "color": "green",
+              "description": null
+            },
+            {
+              "id": "427b824a-1bb9-4594-b322-db9805f4054e",
+              "name": "Gamer (GAMER)",
+              "color": "blue",
+              "description": null
+            },
+            {
+              "id": "e1cbeb8a-8a58-4d77-8872-5401cd53cd48",
+              "name": "Apex Coder (APEX)",
+              "color": "purple",
+              "description": null
+            },
+            {
+              "id": "453b879a-ff34-486d-93f6-2937e82a9596",
+              "name": "AI & NLP Engineer (NLP)",
+              "color": "pink",
+              "description": null
+            },
+            {
+              "id": "161dfb7d-613b-46d2-a720-e5bacc0387dd",
+              "name": "Claude AI Architect (CLAUDE)",
+              "color": "orange",
+              "description": null
+            },
+            {
+              "id": "d8d0b19f-bba3-4c3e-9bd3-685d0f56ceb5",
+              "name": "Data Engineer (DATA)",
+              "color": "red",
+              "description": null
+            },
+            {
+              "id": "0baf06b8-b426-45fa-919a-baedef81b2c0",
+              "name": "Robotics & Computer Engineer (ROBOT)",
+              "color": "orange",
+              "description": null
+            },
+            {
+              "id": "2cc1aaa2-4b02-4e60-83ab-ef5f146aae1d",
+              "name": "Masters of Computer Science (OMSCS)",
+              "color": "yellow",
+              "description": null
+            },
+            {
+              "id": "b3123571-f402-4d08-b011-12aed2125141",
+              "name": "Blender Artist (BLEND)",
+              "color": "green",
+              "description": null
+            },
+            {
+              "id": "9468ffb7-5a64-4130-89c4-f4164ba775f1",
+              "name": "2D Artist (2DART)",
+              "color": "blue",
+              "description": null
+            },
+            {
+              "id": "fcf4b098-3207-477f-b8b9-3145eed7f0f1",
+              "name": "Finance & Econ Guru (FIN)",
+              "color": "green",
+              "description": null
+            },
+            {
+              "id": "eb521f79-74c8-4645-b68f-514251889304",
+              "name": "Indie Game Developer (GAME)",
+              "color": "pink",
+              "description": null
+            },
+            {
+              "id": "9d18182c-352b-477e-b94e-0bac248c9a00",
+              "name": "Dating/Marriage (DATE)",
+              "color": "red",
+              "description": null
+            },
+            {
+              "id": "47d1f30b-047a-4a79-8594-d4fc680a6b4b",
+              "name": "Social Media Branding (SOCIAL)",
+              "color": "purple",
+              "description": null
+            },
+            {
+              "id": "f524481a-8c34-4db4-aadb-c8cbc7092ef6",
+              "name": "Arabic (ARABIC)",
+              "color": "yellow",
+              "description": null
+            },
+            {
+              "id": "186614f4-6434-4134-8f08-ea066e04dd46",
+              "name": "Fencing (FENCE)",
+              "color": "green",
+              "description": null
+            },
+            {
+              "id": "9a5c83f2-06bb-4d5d-818a-c000363bb51f",
+              "name": "Elite Athlete (ATHLETE)",
+              "color": "blue",
+              "description": null
+            },
+            {
+              "id": "fb9b6127-30e1-49dd-a09a-36b69f0588d5",
+              "name": "Wise Sage (SAGE)",
+              "color": "purple",
+              "description": null
+            },
+            {
+              "id": "75e6674b-54ca-442a-9e80-f3ef5babb41b",
+              "name": "Eudaimonia (EUD)",
+              "color": "pink",
+              "description": null
+            },
+            {
+              "id": "097f5e7b-b9fa-4581-aafb-9cdc24f8e92d",
+              "name": "Explorer (EXPLORE)",
+              "color": "red",
+              "description": null
+            },
+            {
+              "id": "af9fac58-2ba4-46ae-97c9-e35248329b67",
+              "name": "Guitarist (GUITAR)",
+              "color": "orange",
+              "description": null
+            },
+            {
+              "id": "f5cabe98-d24f-41c2-b36c-522aea1fa94f",
+              "name": "Darbuka (Tabah) Player (DARBUKA)",
+              "color": "yellow",
+              "description": null
+            },
+            {
+              "id": "7246708d-dcc8-4151-b01f-eeabcefcde89",
+              "name": "Ocarina Player (OCARINA)",
+              "color": "blue",
+              "description": null
+            },
+            {
+              "id": "c5da2dca-8433-4425-a6cf-76a68dcc6f10",
+              "name": "Biblical Language Enthusiast (BIBLES)",
+              "color": "green",
+              "description": null
+            },
+            {
+              "id": "ad152946-820f-4092-8381-2e461d9c5050",
+              "name": "Evangelical Humanist (THEO)",
+              "color": "purple",
+              "description": null
+            },
+            {
+              "id": "54ece5c1-532d-44cc-91b5-f2bfabba1ab3",
+              "name": "Amigurumi Crocheter (CROCHET)",
+              "color": "pink",
+              "description": null
+            },
+            {
+              "id": "18204ba1-e272-400c-af87-a92847ba0143",
+              "name": "Amateur Linguist (LING)",
+              "color": "red",
+              "description": null
+            },
+            {
+              "id": "5208e823-f78f-4915-9a4e-3418ff8c4f6e",
+              "name": "Amateur Classicist (CLASSIC)",
+              "color": "blue",
+              "description": null
+            },
+            {
+              "id": "9b6fb9b0-5b85-4f15-bd27-ab002da7f476",
+              "name": "Researcher (RESEARCH)",
+              "color": "orange",
+              "description": null
+            },
+            {
+              "id": "e8c112f8-c438-49ca-a557-0d9e8b4f69b4",
+              "name": "Sacred Anthropologist (ANTHRO)",
+              "color": "yellow",
+              "description": null
+            },
+            {
+              "id": "f6f76c41-f05c-4e37-8ad4-4af1a384a221",
+              "name": "Game Engine Programmer (ENGINE)",
+              "color": "green",
+              "description": null
+            },
+            {
+              "id": "785f5205-ecc1-44d5-8a9d-51dc287d60a5",
+              "name": "Cook (COOK)",
+              "color": "blue",
+              "description": null
+            },
+            {
+              "id": "6c8b06e9-a031-4e5d-bf18-28d6085e77b9",
+              "name": "Nutritionist (NUTRI)",
+              "color": "red",
+              "description": null
+            },
+            {
+              "id": "6f09a2b7-0fb2-4501-8268-c6a654a410f0",
+              "name": "Polyglot (POLY)",
+              "color": "purple",
+              "description": null
+            },
+            {
+              "id": "c8a02ed1-c7db-4767-9617-ed89ecbf9f01",
+              "name": "Ventriloquist & Puppeteer (VENT)",
+              "color": "pink",
+              "description": null
+            },
+            {
+              "id": "cc7c8b73-0fa9-4e29-95fd-d4273b8aaccf",
+              "name": "Logician (LOGIC)",
+              "color": "red",
+              "description": null
+            },
+            {
+              "id": "33741733-cc9d-4b15-b87f-659f5a9b84f7",
+              "name": "Restorative Apologist (APOL)",
+              "color": "blue",
+              "description": null
+            },
+            {
+              "id": "358921bf-0c0c-4f20-b007-fb293a1f0490",
+              "name": "Competitive Coder (COMP)",
+              "color": "orange",
+              "description": null
+            }
+          ]
+        }
+      },
+      "Year": {
+        "id": "%5De%3C_",
+        "name": "Year",
+        "description": null,
+        "type": "select",
+        "select": {
+          "options": [
+            {
+              "id": "112c807f-afc5-43c6-a275-0d42032463d6",
+              "name": "2026",
+              "color": "purple",
+              "description": null
+            },
+            {
+              "id": "c1f5dd46-1881-4153-a6c7-c5bf40152d3f",
+              "name": "2027",
+              "color": "green",
+              "description": null
+            },
+            {
+              "id": "79c94ed9-0e98-41ad-96b3-e3ef34bcf2b6",
+              "name": "2028",
+              "color": "pink",
+              "description": null
+            },
+            {
+              "id": "0ab7805d-0772-48b4-a9bc-af182052e3d8",
+              "name": "2029",
+              "color": "yellow",
+              "description": null
+            },
+            {
+              "id": "7626331a-da50-4f1d-9567-df2586a8df28",
+              "name": "2030",
+              "color": "blue",
+              "description": null
+            }
+          ]
+        }
+      },
+      "Status": {
+        "id": "%60W%3BN",
+        "name": "Status",
+        "description": null,
+        "type": "status",
+        "status": {
+          "options": [
+            {
+              "id": "d238aaea-89e8-4cdb-b3c5-c2f92a384598",
+              "name": "Not started",
+              "color": "default",
+              "description": null
+            },
+            {
+              "id": "89df61ff-335a-4421-9604-bd476899cf74",
+              "name": "In progress",
+              "color": "purple",
+              "description": null
+            },
+            {
+              "id": "9fce24c5-a3ea-44ca-9691-af66b46ea951",
+              "name": "Done",
+              "color": "green",
+              "description": null
+            }
+          ],
+          "groups": [
+            {
+              "id": "f4757f8f-32f3-4f95-b3af-c0b73bba1592",
+              "name": "To-do",
+              "color": "gray",
+              "option_ids": [
+                "d238aaea-89e8-4cdb-b3c5-c2f92a384598"
+              ]
+            },
+            {
+              "id": "d115e976-6b2c-46ce-8832-30aec0d4cbad",
+              "name": "In progress",
+              "color": "blue",
+              "option_ids": [
+                "89df61ff-335a-4421-9604-bd476899cf74"
+              ]
+            },
+            {
+              "id": "098386da-5d67-4f68-bb73-8013a9927ff1",
+              "name": "Complete",
+              "color": "green",
+              "option_ids": [
+                "9fce24c5-a3ea-44ca-9691-af66b46ea951"
+              ]
+            }
+          ]
+        }
+      },
+      "Notes": {
+        "id": "%60leu",
+        "name": "Notes",
+        "description": null,
+        "type": "rich_text",
+        "rich_text": {}
+      },
+      "Pillar": {
+        "id": "c%3ENG",
+        "name": "Pillar",
+        "description": null,
+        "type": "select",
+        "select": {
+          "options": []
+        }
+      },
+      "Month": {
+        "id": "dT%7DM",
+        "name": "Month",
+        "description": null,
+        "type": "select",
+        "select": {
+          "options": [
+            {
+              "id": "f5162e5c-e352-41a9-bfed-ae82a375a3c1",
+              "name": "January",
+              "color": "blue",
+              "description": null
+            },
+            {
+              "id": "d98dd05e-cf5c-4b82-b22e-3e952a996db8",
+              "name": "February",
+              "color": "pink",
+              "description": null
+            },
+            {
+              "id": "02ef227b-d2c7-4812-af59-2764371c2f78",
+              "name": "March",
+              "color": "green",
+              "description": null
+            },
+            {
+              "id": "9818c455-0867-49b8-9371-694ce8ad9577",
+              "name": "April",
+              "color": "blue",
+              "description": null
+            },
+            {
+              "id": "7dd19425-0554-4671-a82d-df91bd79f9ff",
+              "name": "May",
+              "color": "purple",
+              "description": null
+            },
+            {
+              "id": "c418b326-777c-4ef8-a86a-c7cce36c1402",
+              "name": "June",
+              "color": "green",
+              "description": null
+            },
+            {
+              "id": "6205b286-6376-49a5-a76f-62b3f07e4af1",
+              "name": "July",
+              "color": "red",
+              "description": null
+            },
+            {
+              "id": "15666bda-f2fa-42ca-8c8f-b24fbdc43e00",
+              "name": "August",
+              "color": "yellow",
+              "description": null
+            },
+            {
+              "id": "a1de7bf0-a789-4637-acfd-01fae6796442",
+              "name": "September",
+              "color": "red",
+              "description": null
+            },
+            {
+              "id": "a4bea19a-29c5-437c-8894-89bbc79c29d5",
+              "name": "October",
+              "color": "orange",
+              "description": null
+            },
+            {
+              "id": "6ad15fc8-f947-490d-b844-c4300fe4f6ae",
+              "name": "November",
+              "color": "brown",
+              "description": null
+            },
+            {
+              "id": "1cdb81b7-5919-463d-8c3b-35d039ad9faa",
+              "name": "December",
+              "color": "red",
+              "description": null
+            }
+          ]
+        }
+      },
+      "Task": {
+        "id": "title",
+        "name": "Task",
+        "description": null,
+        "type": "title",
+        "title": {}
+      }
+    },
+    "parent": {
+      "type": "database_id",
+      "database_id": "385fbe79-a388-801d-90dd-c9be21594eec"
+    },
+    "database_parent": {
+      "type": "block_id",
+      "block_id": "385fbe79-a388-806b-bd21-dc97a110bd10"
+    },
+    "url": "https://app.notion.com/p/385fbe79a388801d90ddc9be21594eec",
+    "public_url": null,
+    "in_trash": false
+  },
+  {
+    "object": "page",
+    "id": "2e5fbe79-a388-80d3-8285-f6dcc716340e",
+    "created_time": "2026-01-11T02:12:00.000Z",
+    "last_edited_time": "2026-09-06T16:41:00.000Z",
+    "created_by": {
+      "object": "user",
+      "id": "a6cf9c60-4aa2-47fc-8349-5161bd068660"
+    },
+    "last_edited_by": {
+      "object": "user",
+      "id": "a6cf9c60-4aa2-47fc-8349-5161bd068660"
+    },
+    "cover": null,
+    "icon": {
+      "type": "custom_emoji",
+      "custom_emoji": {
+        "id": "167fbe79-a388-8072-b413-007a6aafe8a7",
+        "name": "dragon_cool",
+        "url": "https://s3-us-west-2.amazonaws.com/public.notion-static.com/803a642a-25d8-44b2-9ce8-cd073c3c4f88/tumblr_1f08ab2d40ee02cb51480dd21d5bde07_14c2ee1e_250.png"
+      }
+    },
+    "parent": {
+      "type": "page_id",
+      "page_id": "2cffbe79-a388-80a2-8ff2-f577b80f07a3"
+    },
+    "in_trash": false,
+    "is_archived": false,
+    "is_locked": false,
+    "properties": {
+      "title": {
+        "id": "title",
+        "type": "title",
+        "title": [
+          {
+            "type": "text",
+            "text": {
+              "content": "The Ultimate",
+              "link": null
+            },
+            "annotations": {
+              "bold": false,
+              "italic": false,
+              "strikethrough": false,
+              "underline": false,
+              "code": false,
+              "color": "default"
+            },
+            "plain_text": "The Ultimate",
+            "href": null
+          }
+        ]
+      }
+    },
+    "url": "https://app.notion.com/p/The-Ultimate-2e5fbe79a38880d38285f6dcc716340e",
+    "public_url": null
+  },
+  {
+    "object": "page",
+    "id": "3d1fbe79-a388-81ff-b0b7-f38ba89b416e",
+    "created_time": "2026-09-04T02:12:00.000Z",
+    "last_edited_time": "2026-09-04T02:18:00.000Z",
+    "created_by": {
+      "object": "user",
+      "id": "a6cf9c60-4aa2-47fc-8349-5161bd068660"
+    },
+    "last_edited_by": {
+      "object": "user",
+      "id": "a6cf9c60-4aa2-47fc-8349-5161bd068660"
+    },
+    "cover": null,
+    "icon": null,
+    "parent": {
+      "type": "data_source_id",
+      "data_source_id": "385fbe79-a388-80c0-bac9-000b9d183e35",
+      "database_id": "385fbe79-a388-801d-90dd-c9be21594eec"
+    },
+    "in_trash": false,
+    "is_archived": false,
+    "is_locked": false,
+    "properties": {
+      "Ultimate": {
+        "id": "%3ENqR",
+        "type": "select",
+        "select": {
+          "id": "e1cbeb8a-8a58-4d77-8872-5401cd53cd48",
+          "name": "Apex Coder (APEX)",
+          "color": "purple"
+        }
+      },
+      "Year": {
+        "id": "%5De%3C_",
+        "type": "select",
+        "select": null
+      },
+      "Status": {
+        "id": "%60W%3BN",
+        "type": "status",
+        "status": {
+          "id": "d238aaea-89e8-4cdb-b3c5-c2f92a384598",
+          "name": "Not started",
+          "color": "default"
+        }
+      },
+      "Notes": {
+        "id": "%60leu",
+        "type": "rich_text",
+        "rich_text": [
+          {
+            "type": "text",
+            "text": {
+              "content": "Epistates",
+              "link": null
+            },
+            "annotations": {
+              "bold": false,
+              "italic": false,
+              "strikethrough": false,
+              "underline": false,
+              "code": false,
+              "color": "default"
+            },
+            "plain_text": "Epistates",
+            "href": null
+          }
+        ]
+      },
+      "Pillar": {
+        "id": "c%3ENG",
+        "type": "select",
+        "select": null
+      },
+      "Month": {
+        "id": "dT%7DM",
+        "type": "select",
+        "select": null
+      },
+      "Task": {
+        "id": "title",
+        "type": "title",
+        "title": [
+          {
+            "type": "text",
+            "text": {
+              "content": "Build your own hypervisor",
+              "link": null
+            },
+            "annotations": {
+              "bold": false,
+              "italic": false,
+              "strikethrough": false,
+              "underline": false,
+              "code": false,
+              "color": "default"
+            },
+            "plain_text": "Build your own hypervisor",
+            "href": null
+          }
+        ]
+      }
+    },
+    "url": "https://app.notion.com/p/Build-your-own-hypervisor-3d1fbe79a38881ffb0b7f38ba89b416e",
+    "public_url": null
+  }
+]

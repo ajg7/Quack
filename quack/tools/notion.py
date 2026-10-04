@@ -18,13 +18,13 @@ SEARCH_NOTION_SCHEMA = {
     },
 }
 
-def search_notion(query: str) -> list[dict]:
-    raw_results = notion.search(query)
+def search_notion(query: str) -> dict:
+    search_results = notion.search(query)
 
     primary = []
     legacy = []
 
-    for page in raw_results:
+    for page in search_results.results:
         object_type = page.get("object")
 
         if object_type == "page":
@@ -48,4 +48,10 @@ def search_notion(query: str) -> list[dict]:
         is_primary = page.get("parent", {}).get("page_id") == config.AJ_GEBARA_PAGE_ID
         (primary if is_primary else legacy).append(normalized_page)
 
-    return primary + legacy
+    output = {"results": primary + legacy, "partial": search_results.partial}
+    if search_results.partial:
+        output["warning"] = (
+            "Notion rate-limited this search and retries were exhausted, so these results "
+            "are incomplete. Tell the user the list may be missing items."
+        )
+    return output

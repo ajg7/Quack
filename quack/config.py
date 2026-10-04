@@ -1,5 +1,6 @@
 import os
 import sys
+from pathlib import Path
 
 import anthropic
 import truststore
@@ -19,6 +20,11 @@ MAX_TOKENS = 16000
 NOTION_API = "https://api.notion.com/v1"
 NOTION_VERSION = "2026-03-11"
 NOTION_TIMEOUT = 30
+NOTION_RATE_LIMIT_PER_SEC = 3
+NOTION_MAX_RETRIES = 3
+NOTION_DEFAULT_RETRY_AFTER = 1.0
+
+TRACE_DIR = Path(__file__).resolve().parent.parent / "traces"
 
 AGOGE_DATA_SOURCE_ID = "a23b7da0-e8f4-4a21-a648-e810261410a0"
 AGOGE_DATABASE_ID = "632e329c-fa87-4ea9-bc9f-9868f6b5705e"
