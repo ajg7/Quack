@@ -1,0 +1,96 @@
+:root {
+  --pond-navy: #0b1f4d;
+  --quack-blue: #1f4fd1;
+  --yolk: #ffc93c;
+  --bill: #f2a900;
+  --foam: #f4f6fb;
+
+  --bg: #f4f6fb;
+  --surface: #ffffff;
+  --header-bg: #0b1f4d;
+  --header-border: transparent;
+  --header-fg: #ffc93c;
+  --fg: #0b1f4d;
+  --muted: #3b4f86;
+  --border: #dce3f5;
+  --link: #1f4fd1;
+  --link-hover: #0b1f4d;
+  --bubble-user: #1f4fd1;
+  --bubble-user-fg: #ffffff;
+  --avatar-bg: #ffc93c;
+  --avatar-fg: #0b1f4d;
+  --avatar-accent: #1f4fd1;
+  --pill-bg: #fff4d1;
+  --pill-fg: #5a4300;
+  --chip-bg: #e7edfc;
+  --chip-fg: #1f4fd1;
+  --badge-bg: #ffc93c;
+  --badge-fg: #0b1f4d;
+  --badge-border: transparent;
+  --dot: #1f4fd1;
+  --composer-bg: #ffffff;
+  --composer-border: #0b1f4d;
+  --button-bg: #ffc93c;
+  --button-fg: #0b1f4d;
+  --ghost-border: #1f4fd1;
+  --ghost-fg: #1f4fd1;
+  --ok: #135c33;
+  --danger: #b42318;
+  --placeholder: #6b7fb5;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #071433;
+    --surface: #0e1f52;
+    --header-bg: #050e26;
+    --header-border: #1b2f66;
+    --fg: #e8eeff;
+    --muted: #8fa3d9;
+    --border: #1b2f66;
+    --link: #ffc93c;
+    --link-hover: #ffe08a;
+    --pill-bg: #2e2500;
+    --pill-fg: #ffd666;
+    --chip-bg: #1a3270;
+    --chip-fg: #b8ccff;
+    --badge-bg: transparent;
+    --badge-fg: #ffc93c;
+    --badge-border: #ffc93c;
+    --dot: #ffc93c;
+    --composer-bg: #0e1f52;
+    --composer-border: #3d5aae;
+    --ghost-border: #ffc93c;
+    --ghost-fg: #ffc93c;
+    --ok: #6fdc9b;
+    --danger: #ff8a80;
+    --placeholder: #8fa3d9;
+  }
+}
+
+:root[data-theme="dark"] {
+  --bg: #071433;
+  --surface: #0e1f52;
+  --header-bg: #050e26;
+  --header-border: #1b2f66;
+  --fg: #e8eeff;
+  --muted: #8fa3d9;
+  --border: #1b2f66;
+  --link: #ffc93c;
+  --link-hover: #ffe08a;
+  --pill-bg: #2e2500;
+  --pill-fg: #ffd666;
+  --chip-bg: #1a3270;
+  --chip-fg: #b8ccff;
+  --badge-bg: transparent;
+  --badge-fg: #ffc93c;
+  --badge-border: #ffc93c;
+  --dot: #ffc93c;
+  --composer-bg: #0e1f52;
+  --composer-border: #3d5aae;
+  --ghost-border: #ffc93c;
+  --ghost-fg: #ffc93c;
+  --ok: #6fdc9b;
+  --danger: #ff8a80;
+  --placeholder: #8fa3d9;
+}

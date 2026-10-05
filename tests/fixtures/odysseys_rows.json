@@ -1,0 +1,503 @@
+[
+  {
+    "object": "page",
+    "id": "3d1fbe79-a388-8104-93fa-e8e5aba4136d",
+    "created_time": "2026-09-04T02:12:00.000Z",
+    "last_edited_time": "2026-09-04T02:17:00.000Z",
+    "created_by": {
+      "object": "user",
+      "id": "a6cf9c60-4aa2-47fc-8349-5161bd068660"
+    },
+    "last_edited_by": {
+      "object": "user",
+      "id": "a6cf9c60-4aa2-47fc-8349-5161bd068660"
+    },
+    "cover": null,
+    "icon": null,
+    "parent": {
+      "type": "data_source_id",
+      "data_source_id": "385fbe79-a388-80c0-bac9-000b9d183e35",
+      "database_id": "385fbe79-a388-801d-90dd-c9be21594eec"
+    },
+    "in_trash": false,
+    "is_archived": false,
+    "is_locked": false,
+    "properties": {
+      "Ultimate": {
+        "id": "%3ENqR",
+        "type": "select",
+        "select": {
+          "id": "e1cbeb8a-8a58-4d77-8872-5401cd53cd48",
+          "name": "Apex Coder (APEX)",
+          "color": "purple"
+        }
+      },
+      "Year": {
+        "id": "%5De%3C_",
+        "type": "select",
+        "select": null
+      },
+      "Status": {
+        "id": "%60W%3BN",
+        "type": "status",
+        "status": {
+          "id": "d238aaea-89e8-4cdb-b3c5-c2f92a384598",
+          "name": "Not started",
+          "color": "default"
+        }
+      },
+      "Notes": {
+        "id": "%60leu",
+        "type": "rich_text",
+        "rich_text": [
+          {
+            "type": "text",
+            "text": {
+              "content": "Kryptos",
+              "link": null
+            },
+            "annotations": {
+              "bold": false,
+              "italic": false,
+              "strikethrough": false,
+              "underline": false,
+              "code": false,
+              "color": "default"
+            },
+            "plain_text": "Kryptos",
+            "href": null
+          }
+        ]
+      },
+      "Pillar": {
+        "id": "c%3ENG",
+        "type": "select",
+        "select": null
+      },
+      "Month": {
+        "id": "dT%7DM",
+        "type": "select",
+        "select": null
+      },
+      "Task": {
+        "id": "title",
+        "type": "title",
+        "title": [
+          {
+            "type": "text",
+            "text": {
+              "content": "Build your own encryption algorithm",
+              "link": null
+            },
+            "annotations": {
+              "bold": false,
+              "italic": false,
+              "strikethrough": false,
+              "underline": false,
+              "code": false,
+              "color": "default"
+            },
+            "plain_text": "Build your own encryption algorithm",
+            "href": null
+          }
+        ]
+      }
+    },
+    "url": "https://app.notion.com/p/Build-your-own-encryption-algorithm-3d1fbe79a388810493fae8e5aba4136d",
+    "public_url": null
+  },
+  {
+    "object": "page",
+    "id": "3d1fbe79-a388-811e-9d85-f15798b55a0e",
+    "created_time": "2026-09-04T02:12:00.000Z",
+    "last_edited_time": "2026-09-04T02:12:00.000Z",
+    "created_by": {
+      "object": "user",
+      "id": "a6cf9c60-4aa2-47fc-8349-5161bd068660"
+    },
+    "last_edited_by": {
+      "object": "user",
+      "id": "a6cf9c60-4aa2-47fc-8349-5161bd068660"
+    },
+    "cover": null,
+    "icon": null,
+    "parent": {
+      "type": "data_source_id",
+      "data_source_id": "385fbe79-a388-80c0-bac9-000b9d183e35",
+      "database_id": "385fbe79-a388-801d-90dd-c9be21594eec"
+    },
+    "in_trash": false,
+    "is_archived": false,
+    "is_locked": false,
+    "properties": {
+      "Ultimate": {
+        "id": "%3ENqR",
+        "type": "select",
+        "select": {
+          "id": "e1cbeb8a-8a58-4d77-8872-5401cd53cd48",
+          "name": "Apex Coder (APEX)",
+          "color": "purple"
+        }
+      },
+      "Year": {
+        "id": "%5De%3C_",
+        "type": "select",
+        "select": null
+      },
+      "Status": {
+        "id": "%60W%3BN",
+        "type": "status",
+        "status": {
+          "id": "d238aaea-89e8-4cdb-b3c5-c2f92a384598",
+          "name": "Not started",
+          "color": "default"
+        }
+      },
+      "Notes": {
+        "id": "%60leu",
+        "type": "rich_text",
+        "rich_text": []
+      },
+      "Pillar": {
+        "id": "c%3ENG",
+        "type": "select",
+        "select": null
+      },
+      "Month": {
+        "id": "dT%7DM",
+        "type": "select",
+        "select": null
+      },
+      "Task": {
+        "id": "title",
+        "type": "title",
+        "title": [
+          {
+            "type": "text",
+            "text": {
+              "content": "Build your own operating system",
+              "link": null
+            },
+            "annotations": {
+              "bold": false,
+              "italic": false,
+              "strikethrough": false,
+              "underline": false,
+              "code": false,
+              "color": "default"
+            },
+            "plain_text": "Build your own operating system",
+            "href": null
+          }
+        ]
+      }
+    },
+    "url": "https://app.notion.com/p/Build-your-own-operating-system-3d1fbe79a388811e9d85f15798b55a0e",
+    "public_url": null
+  },
+  {
+    "object": "page",
+    "id": "3ccfbe79-a388-800e-91b3-f1ba5b201ffa",
+    "created_time": "2026-08-30T19:37:00.000Z",
+    "last_edited_time": "2026-08-30T19:38:00.000Z",
+    "created_by": {
+      "object": "user",
+      "id": "a6cf9c60-4aa2-47fc-8349-5161bd068660"
+    },
+    "last_edited_by": {
+      "object": "user",
+      "id": "a6cf9c60-4aa2-47fc-8349-5161bd068660"
+    },
+    "cover": null,
+    "icon": null,
+    "parent": {
+      "type": "data_source_id",
+      "data_source_id": "385fbe79-a388-80c0-bac9-000b9d183e35",
+      "database_id": "385fbe79-a388-801d-90dd-c9be21594eec"
+    },
+    "in_trash": false,
+    "is_archived": false,
+    "is_locked": false,
+    "properties": {
+      "Ultimate": {
+        "id": "%3ENqR",
+        "type": "select",
+        "select": {
+          "id": "47d1f30b-047a-4a79-8594-d4fc680a6b4b",
+          "name": "Social Media Branding (SOCIAL)",
+          "color": "purple"
+        }
+      },
+      "Year": {
+        "id": "%5De%3C_",
+        "type": "select",
+        "select": {
+          "id": "112c807f-afc5-43c6-a275-0d42032463d6",
+          "name": "2026",
+          "color": "purple"
+        }
+      },
+      "Status": {
+        "id": "%60W%3BN",
+        "type": "status",
+        "status": {
+          "id": "d238aaea-89e8-4cdb-b3c5-c2f92a384598",
+          "name": "Not started",
+          "color": "default"
+        }
+      },
+      "Notes": {
+        "id": "%60leu",
+        "type": "rich_text",
+        "rich_text": []
+      },
+      "Pillar": {
+        "id": "c%3ENG",
+        "type": "select",
+        "select": null
+      },
+      "Month": {
+        "id": "dT%7DM",
+        "type": "select",
+        "select": {
+          "id": "a1de7bf0-a789-4637-acfd-01fae6796442",
+          "name": "September",
+          "color": "red"
+        }
+      },
+      "Task": {
+        "id": "title",
+        "type": "title",
+        "title": [
+          {
+            "type": "text",
+            "text": {
+              "content": "Have Claude interview me with Ruben Hassid’s 100 Questions to find my voice ",
+              "link": null
+            },
+            "annotations": {
+              "bold": false,
+              "italic": false,
+              "strikethrough": false,
+              "underline": false,
+              "code": false,
+              "color": "default"
+            },
+            "plain_text": "Have Claude interview me with Ruben Hassid’s 100 Questions to find my voice ",
+            "href": null
+          }
+        ]
+      }
+    },
+    "url": "https://app.notion.com/p/Have-Claude-interview-me-with-Ruben-Hassid-s-100-Questions-to-find-my-voice-3ccfbe79a388800e91b3f1ba5b201ffa",
+    "public_url": null
+  },
+  {
+    "object": "page",
+    "id": "3c6fbe79-a388-8137-a37e-c9e085acde78",
+    "created_time": "2026-08-24T19:24:00.000Z",
+    "last_edited_time": "2026-08-24T19:24:00.000Z",
+    "created_by": {
+      "object": "user",
+      "id": "a6cf9c60-4aa2-47fc-8349-5161bd068660"
+    },
+    "last_edited_by": {
+      "object": "user",
+      "id": "a6cf9c60-4aa2-47fc-8349-5161bd068660"
+    },
+    "cover": null,
+    "icon": null,
+    "parent": {
+      "type": "data_source_id",
+      "data_source_id": "385fbe79-a388-80c0-bac9-000b9d183e35",
+      "database_id": "385fbe79-a388-801d-90dd-c9be21594eec"
+    },
+    "in_trash": false,
+    "is_archived": false,
+    "is_locked": false,
+    "properties": {
+      "Ultimate": {
+        "id": "%3ENqR",
+        "type": "select",
+        "select": {
+          "id": "41ebd69e-5359-4ef7-9a7c-86f54336cf02",
+          "name": "Leader (LEAD)",
+          "color": "green"
+        }
+      },
+      "Year": {
+        "id": "%5De%3C_",
+        "type": "select",
+        "select": {
+          "id": "c1f5dd46-1881-4153-a6c7-c5bf40152d3f",
+          "name": "2027",
+          "color": "green"
+        }
+      },
+      "Status": {
+        "id": "%60W%3BN",
+        "type": "status",
+        "status": {
+          "id": "d238aaea-89e8-4cdb-b3c5-c2f92a384598",
+          "name": "Not started",
+          "color": "default"
+        }
+      },
+      "Notes": {
+        "id": "%60leu",
+        "type": "rich_text",
+        "rich_text": [
+          {
+            "type": "text",
+            "text": {
+              "content": "Session 5 of 7. Thu Feb 11, Lincoln. Time TBD.",
+              "link": null
+            },
+            "annotations": {
+              "bold": false,
+              "italic": false,
+              "strikethrough": false,
+              "underline": false,
+              "code": false,
+              "color": "default"
+            },
+            "plain_text": "Session 5 of 7. Thu Feb 11, Lincoln. Time TBD.",
+            "href": null
+          }
+        ]
+      },
+      "Pillar": {
+        "id": "c%3ENG",
+        "type": "select",
+        "select": null
+      },
+      "Month": {
+        "id": "dT%7DM",
+        "type": "select",
+        "select": {
+          "id": "d98dd05e-cf5c-4b82-b22e-3e952a996db8",
+          "name": "February",
+          "color": "pink"
+        }
+      },
+      "Task": {
+        "id": "title",
+        "type": "title",
+        "title": [
+          {
+            "type": "text",
+            "text": {
+              "content": "Young Alumni Academy — Candle Making",
+              "link": null
+            },
+            "annotations": {
+              "bold": false,
+              "italic": false,
+              "strikethrough": false,
+              "underline": false,
+              "code": false,
+              "color": "default"
+            },
+            "plain_text": "Young Alumni Academy — Candle Making",
+            "href": null
+          }
+        ]
+      }
+    },
+    "url": "https://app.notion.com/p/Young-Alumni-Academy-Candle-Making-3c6fbe79a3888137a37ec9e085acde78",
+    "public_url": null
+  },
+  {
+    "object": "page",
+    "id": "3c4fbe79-a388-8051-b19a-e6bd59101efc",
+    "created_time": "2026-08-22T23:30:00.000Z",
+    "last_edited_time": "2026-08-22T23:30:00.000Z",
+    "created_by": {
+      "object": "user",
+      "id": "a6cf9c60-4aa2-47fc-8349-5161bd068660"
+    },
+    "last_edited_by": {
+      "object": "user",
+      "id": "a6cf9c60-4aa2-47fc-8349-5161bd068660"
+    },
+    "cover": null,
+    "icon": null,
+    "parent": {
+      "type": "data_source_id",
+      "data_source_id": "385fbe79-a388-80c0-bac9-000b9d183e35",
+      "database_id": "385fbe79-a388-801d-90dd-c9be21594eec"
+    },
+    "in_trash": false,
+    "is_archived": false,
+    "is_locked": false,
+    "properties": {
+      "Ultimate": {
+        "id": "%3ENqR",
+        "type": "select",
+        "select": {
+          "id": "097f5e7b-b9fa-4581-aafb-9cdc24f8e92d",
+          "name": "Explorer (EXPLORE)",
+          "color": "red"
+        }
+      },
+      "Year": {
+        "id": "%5De%3C_",
+        "type": "select",
+        "select": {
+          "id": "c1f5dd46-1881-4153-a6c7-c5bf40152d3f",
+          "name": "2027",
+          "color": "green"
+        }
+      },
+      "Status": {
+        "id": "%60W%3BN",
+        "type": "status",
+        "status": {
+          "id": "d238aaea-89e8-4cdb-b3c5-c2f92a384598",
+          "name": "Not started",
+          "color": "default"
+        }
+      },
+      "Notes": {
+        "id": "%60leu",
+        "type": "rich_text",
+        "rich_text": []
+      },
+      "Pillar": {
+        "id": "c%3ENG",
+        "type": "select",
+        "select": null
+      },
+      "Month": {
+        "id": "dT%7DM",
+        "type": "select",
+        "select": null
+      },
+      "Task": {
+        "id": "title",
+        "type": "title",
+        "title": [
+          {
+            "type": "text",
+            "text": {
+              "content": "Disneyland",
+              "link": null
+            },
+            "annotations": {
+              "bold": false,
+              "italic": false,
+              "strikethrough": false,
+              "underline": false,
+              "code": false,
+              "color": "default"
+            },
+            "plain_text": "Disneyland",
+            "href": null
+          }
+        ]
+      }
+    },
+    "url": "https://app.notion.com/p/Disneyland-3c4fbe79a3888051b19ae6bd59101efc",
+    "public_url": null
+  }
+]

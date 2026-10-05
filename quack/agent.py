@@ -1,6 +1,6 @@
 from quack import config, tools, tracing
 from quack.integrations import notion
-from pathlib import Path
+from quack.prompt import load_system_prompt
 import json
 import time
 
@@ -9,10 +9,7 @@ def ask(question: str) -> str:
   request_id = tracing.new_request_id()
   started = time.perf_counter()
 
-  system_prompt_path = Path(__file__).parent / "prompts" / "system.md"
-
-  with open(system_prompt_path, encoding="utf-8") as f:
-    system_prompt = f.read()
+  system_prompt = load_system_prompt()
 
   messages = [
     {"role": "user", "content": question},

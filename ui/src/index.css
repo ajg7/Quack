@@ -1,0 +1,64 @@
+@import "tailwindcss";
+@import "./styles/tokens.css";
+
+@theme inline {
+  --font-sans: "Bricolage Grotesque", system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+
+  --color-navy: #0b1f4d;
+  --color-brand: #1f4fd1;
+  --color-yolk: #ffc93c;
+  --color-bill: #f2a900;
+  --color-foam: #f4f6fb;
+
+  --color-page: var(--bg);
+  --color-surface: var(--surface);
+  --color-header: var(--header-bg);
+  --color-header-line: var(--header-border);
+  --color-header-ink: var(--header-fg);
+  --color-ink: var(--fg);
+  --color-muted: var(--muted);
+  --color-line: var(--border);
+  --color-link: var(--link);
+  --color-bubble: var(--bubble-user);
+  --color-bubble-ink: var(--bubble-user-fg);
+  --color-avatar: var(--avatar-bg);
+  --color-pill: var(--pill-bg);
+  --color-pill-ink: var(--pill-fg);
+  --color-chip: var(--chip-bg);
+  --color-chip-ink: var(--chip-fg);
+  --color-badge: var(--badge-bg);
+  --color-badge-ink: var(--badge-fg);
+  --color-badge-line: var(--badge-border);
+  --color-dot: var(--dot);
+  --color-composer: var(--composer-bg);
+  --color-composer-line: var(--composer-border);
+  --color-action: var(--button-bg);
+  --color-action-ink: var(--button-fg);
+  --color-ghost-line: var(--ghost-border);
+  --color-ghost-ink: var(--ghost-fg);
+  --color-ok: var(--ok);
+  --color-danger: var(--danger);
+  --color-placeholder: var(--placeholder);
+
+  --radius-panel: 22px;
+  --radius-card: 26px;
+}
+
+@layer base {
+  :root {
+    color-scheme: light dark;
+  }
+
+  body {
+    @apply bg-page font-sans text-ink antialiased;
+  }
+
+  a {
+    @apply text-link;
+  }
+
+  #root {
+    min-height: 100vh;
+  }
+}

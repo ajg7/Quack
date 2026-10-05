@@ -11,6 +11,7 @@ from quack import config
 class NotionResults:
   results: list[dict] = field(default_factory=list)
   partial: bool = False
+  has_more: bool = False
 
 
 @dataclass
@@ -80,7 +81,9 @@ def _request(method: str, path: str, **kwargs) -> dict:
     f"Notion kept returning 429 after {config.NOTION_MAX_RETRIES} retries for {method} {path}")
 
 
-def _paginate(method: str, path: str, payload: dict | None = None) -> NotionResults:
+def _paginate(
+  method: str, path: str, payload: dict | None = None, limit: int | None = None
+) -> NotionResults:
   results: list[dict] = []
   cursor = None
 
@@ -88,6 +91,8 @@ def _paginate(method: str, path: str, payload: dict | None = None) -> NotionResu
     body = dict(payload or {})
     if cursor:
       body["start_cursor"] = cursor
+    if limit is not None:
+      body["page_size"] = max(1, min(limit - len(results), 100))
 
     try:
       if method == "GET":
@@ -95,18 +100,28 @@ def _paginate(method: str, path: str, payload: dict | None = None) -> NotionResu
       else:
         data = _request(method, path, json=body)
     except NotionRateLimitError:
-      return NotionResults(results, partial=True)
+      return NotionResults(results, partial=True, has_more=True)
 
     results.extend(data.get("results", []))
+    more_available = data.get("has_more", False)
 
-    if not data.get("has_more", False):
+    if limit is not None and len(results) >= limit:
+      return NotionResults(results[:limit], has_more=more_available or len(results) > limit)
+
+    if not more_available:
       return NotionResults(results)
     cursor = data.get("next_cursor")
 
 
-def query_data_source(data_source_id: str, filters: dict | None = None) -> NotionResults:
+def query_data_source(
+  data_source_id: str, filters: dict | None = None, limit: int | None = None
+) -> NotionResults:
   payload = {"filter": filters} if filters else {}
-  return _paginate("POST", f"/data_sources/{data_source_id}/query", payload)
+  return _paginate("POST", f"/data_sources/{data_source_id}/query", payload, limit)
+
+
+def get_page(page_id: str) -> dict:
+  return _request("GET", f"/pages/{page_id}")
 
 
 def get_page_blocks(page_id: str) -> NotionResults:

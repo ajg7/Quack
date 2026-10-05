@@ -59,16 +59,18 @@ traces/                  # trace output (gitignore it)
 
 ### Agoge (formerly "Agons", renamed in Notion)
 
-Use "Agoge" in all new code, names and prompts. The IDs are `AGOGE_DATA_SOURCE_ID` and `AGOGE_DATABASE_ID` in `config.py`. A rename normally keeps IDs, but confirm with `scripts/notion_smoke_test.py` if a query 404s. The schema below is from before the rename, so re-check it the first time it's used.
+Use "Agoge" in all new code, names and prompts. The IDs are `AGOGE_DATA_SOURCE_ID` and `AGOGE_DATABASE_ID` in `config.py`. The rename did change the IDs (the pre-rename ones 404), and the integration only sees a database once it is shared with it in Notion. Schema re-verified against the live API on 2026-10-04:
 
 | Property | Type | Values |
 |---|---|---|
 | `Ritual` | title | task name |
-| `Code` | select | SE, ARABIC, GUITAR, DARBUKA, THEO, SPREE, SAGE, BIBLES, DATE, LING, OMSCS, BLEND, LEAD |
-| `Day(s) of the Week` | multi_select | Everyday, Every Weekday, Mon–Sun |
+| `Ultimate` | relation | links to the Ultimates database (replaced the old `Code` select) |
+| `Day(s) of the Week` | multi_select | full names only: Monday through Sunday (no `Everyday` / `Every Weekday` options) |
 | `Done` | checkbox | reset manually each day |
 
-A ritual belongs to today if `Day(s) of the Week` contains `Everyday`, today's three-letter name, or (Mon–Fri only) `Every Weekday`. Push this to Notion as an `or` filter, and keep a pure `select_for_today()` so the rule is unit-testable. "What are today's Agoge rituals?" is Quack's first eval question.
+A ritual belongs to today if `Day(s) of the Week` contains today's full weekday name (the filter is `{"property": "Day(s) of the Week", "multi_select": {"contains": "Sunday"}}`). The system prompt gets today's date injected from `quack/prompt.py`. "What are today's Agoge rituals?" is Quack's first eval question; on 2026-10-04 (a Sunday) the answer was 10 rituals, matching the filtered query.
+
+The integration currently sees five databases: Agoge, Crucible, Inferno, Odysseys and Ultimates. The old legacy Odysseys (plus Horizons and Contribution Naming) was unshared from the integration on purpose, so there is exactly one Odysseys to find. If an old Odysseys ever reappears in search results, ignore it: the real one lives under the A.J. Gebara hub.
 
 ## Commands
 
@@ -77,7 +79,13 @@ python -m venv .venv && .venv\Scripts\activate    # Windows
 pip install -r requirements.txt
 python scripts/smoke_test.py            # Anthropic reachable, model ID valid
 python scripts/notion_smoke_test.py     # token valid + which data sources it can see
-python -m quack "question"              # once __main__.py exists
+python -m quack "question"              # hand-rolled loop
+python -m quack --lc "question"         # LangChain agent
+uvicorn quack.api:app --reload --port 8000   # chat API (POST /chat streams SSE)
+cd ui && npm run dev                    # chat UI on :5173 (needs the API running)
+                                        # UI stack: React+TS, Tailwind v4, Zustand, axios, @microsoft/fetch-event-source, TanStack Query
+cd ui && npm run check                  # typecheck + oxlint + prettier + vitest
+cd ui && npm run e2e                    # Playwright (mocked backend)
 python -m pytest                        # add pytest to requirements first
 ```
 

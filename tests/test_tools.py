@@ -34,7 +34,14 @@ def test_normalized_result_has_only_plain_keys(monkeypatch):
     results = run_search(monkeypatch, load_search_results())
 
     for result in results:
-        assert set(result) == {"object", "title", "url", "last_edited_time"}
+        assert set(result) == {"object", "id", "title", "url", "last_edited_time"}
+
+
+def test_results_carry_the_id_other_tools_need(monkeypatch):
+    raw = load_search_results()
+    results = run_search(monkeypatch, raw)
+
+    assert [r["id"] for r in results] == [item["id"] for item in raw]
 
 
 def test_data_source_title_comes_from_top_level_title(monkeypatch):

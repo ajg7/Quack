@@ -3,3 +3,8 @@ python-dotenv
 requests
 truststore
 pytest
+langchain
+langchain-anthropic
+fastapi
+uvicorn
+httpx
