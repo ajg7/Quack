@@ -62,3 +62,18 @@
     min-height: 100vh;
   }
 }
+
+@keyframes quack-sprite {
+  from {
+    background-position-x: 0;
+  }
+  to {
+    background-position-x: var(--sprite-end);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .quack-sprite {
+    animation: none !important;
+  }
+}

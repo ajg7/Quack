@@ -1,5 +1,6 @@
 import Markdown from "react-markdown";
 import type { ChatMessage } from "../store/chat";
+import QuackSprite from "./QuackSprite";
 import StepList from "./StepList";
 
 const BUDGET_LABEL: Record<string, string> = {
@@ -29,7 +30,12 @@ function AssistantBubble({ message }: { message: ChatMessage }) {
       className="max-w-[90%] rounded-panel border border-line bg-surface px-4 py-3 text-ink"
     >
       <StepList steps={message.steps} />
-      {waiting && <p className="text-sm text-muted">{label}</p>}
+      {waiting && (
+        <p className="flex items-center gap-2 text-sm text-muted">
+          <QuackSprite />
+          {label}
+        </p>
+      )}
       {message.content && (
         <div className="space-y-2 leading-relaxed [&_a]:underline [&_ol]:list-decimal [&_ol]:pl-5 [&_ul]:list-disc [&_ul]:pl-5">
           <Markdown>{message.content}</Markdown>
