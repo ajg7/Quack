@@ -2,6 +2,12 @@ import Markdown from "react-markdown";
 import type { ChatMessage } from "../store/chat";
 import StepList from "./StepList";
 
+const BUDGET_LABEL: Record<string, string> = {
+  steps: "tool-call",
+  requests: "Notion request",
+  time: "time",
+};
+
 function Notice({ tone, children }: { tone: "danger" | "muted"; children: string }) {
   return (
     <p
@@ -32,6 +38,11 @@ function AssistantBubble({ message }: { message: ChatMessage }) {
       {message.status === "stopped" && <Notice tone="muted">Stopped before finishing.</Notice>}
       {(message.status === "interrupted" || message.status === "error") && message.error && (
         <Notice tone="danger">{message.error}</Notice>
+      )}
+      {message.stats?.budget_exhausted && (
+        <Notice tone="muted">
+          {`Quack reached its ${BUDGET_LABEL[message.stats.budget_exhausted] ?? "budget"} limit, so this answer may be incomplete.`}
+        </Notice>
       )}
       {message.status === "interrupted" && message.content && (
         <Notice tone="muted">The text above is incomplete.</Notice>

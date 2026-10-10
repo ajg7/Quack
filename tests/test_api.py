@@ -200,3 +200,19 @@ def test_sources_failure_becomes_502(client, monkeypatch):
 
     assert response.status_code == 502
     assert "Notion exploded" in response.json()["detail"]
+
+
+def test_second_question_in_a_busy_session_is_rejected_with_409(client):
+    api.sessions.try_begin_turn("busy")
+
+    response = client.post("/chat", json={"session_id": "busy", "message": "q"})
+
+    assert response.status_code == 409
+
+
+def test_turn_lock_is_released_after_the_stream_ends(client, monkeypatch):
+    monkeypatch.setattr(api.streaming, "stream_events", fake_stream())
+
+    client.post("/chat", json={"session_id": "s", "message": "q"})
+
+    assert api.sessions.try_begin_turn("s") is True

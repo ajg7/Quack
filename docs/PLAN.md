@@ -242,3 +242,19 @@ When a RAG hit's `last_edited_time` is older than what Notion reports for that p
 - Pinecone or any hosted vector store
 - Scheduled or webhook-driven indexing (manual trigger only)
 - Deployment beyond your machine
+
+---
+
+## As built (2026-10-10)
+
+What the code does today, where it departs from the diagrams above. Redrawing the diagrams from memory (checkpoints 3.3 and the MVP list) is still yours to do.
+
+- **Budgets, not just retries.** Each question runs under a `Budget` (`quack/budget.py`): 12 tool calls, 40 Notion requests, 90 seconds. A tripped cap makes tools return a stop instruction, and the next model call is forced to answer (`tool_choice: none`), in both the hand-rolled loop and the LangChain agent (middleware). The `done` event carries `budget_exhausted` and the UI shows a notice.
+- **Cache inside the Notion client.** Identical reads within 60 seconds are served from a TTL cache and cost no budget. The staleness check and the indexer bypass it (`fresh=True`).
+- **Parallel tool calls.** The hand-rolled loop runs the tool calls of one turn concurrently. The shared limiter still spaces the HTTP requests.
+- **Router.** `quack/router.py` names the route for every tool call: `live` (search, query, get_page), `rag` (semantic_search) or `live_fallback` (the index was empty or unavailable). The route is written on every `tool_call` trace event and shown on finished steps in the UI.
+- **Indexer.** `python -m quack index` lists pages sorted by `last_edited_time` (newest first, one request per 100 pages), stops at the checkpoint, then indexes oldest first so the checkpoint only ever advances past pages that were stored. A page that fails freezes the checkpoint so it is retried. Cost of a run: listing requests plus one block read per changed page.
+- **Staleness fallback.** For each `semantic_search` hit, one uncached `GET /pages/{id}` compares `last_edited_time`. Newer in Notion: re-index that page (at most 3 per call) and return the live text, flagged `refreshed`. Beyond the cap or on errors: flagged `stale` or `unchecked`. Deleted or trashed pages are removed from the index and dropped.
+- **Counting.** `aggregate_database` counts and groups server-side (up to 2000 rows) because `query_database` is capped at 100 rows. The first eval run failed "which Ultimate has the most Crucible tasks" for exactly that reason, and the answer said so honestly ("at least 131") instead of guessing.
+- **Degradation.** Any Chroma error becomes `IndexUnavailable` and the tool falls back to a live keyword search with a warning. On Windows, deleting `.chroma/` while the API is running may fail because the files are open; stop the API first.
+- **Answering the open questions.** The per-Odyssey loop and the right step budget are measured by `python -m evals`; fill them in from your own traces.

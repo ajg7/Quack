@@ -2,7 +2,12 @@ import { create } from "zustand";
 import { API_URL } from "../config";
 import { clearSession } from "../lib/api";
 import type { DoneEvent, ProgressEvent, StreamEvent } from "../lib/schemas";
-import { StreamHttpError, StreamInterruptedError, streamChat } from "../lib/stream";
+import {
+  StreamHttpError,
+  StreamInterruptedError,
+  StreamProtocolError,
+  streamChat,
+} from "../lib/stream";
 
 export type MessageStatus = "streaming" | "done" | "error" | "interrupted" | "stopped";
 export type StepStatus = "running" | "done" | "error";
@@ -12,6 +17,7 @@ export interface Step {
   tool: string;
   message: string;
   status: StepStatus;
+  route?: string;
 }
 
 export interface ChatMessage {
@@ -43,6 +49,12 @@ export function describeFailure(error: unknown): string {
   if (error instanceof StreamInterruptedError) {
     return "The connection to Quack's backend was lost before the answer finished. This question was not saved to the conversation, so ask it again.";
   }
+  if (error instanceof StreamProtocolError) {
+    return "Quack's backend sent something this page could not read. Try the question again.";
+  }
+  if (error instanceof StreamHttpError && error.status === 409) {
+    return "Quack is still answering your previous question. Wait for it to finish, then ask again.";
+  }
   if (error instanceof StreamHttpError) {
     return `Quack's backend rejected the request (HTTP ${error.status}).`;
   }
@@ -53,13 +65,17 @@ export function applyProgress(steps: Step[], event: ProgressEvent): Step[] {
   const status: StepStatus = event.status === "start" ? "running" : event.status;
   const index = steps.findIndex((step) => step.step === event.step);
   if (index === -1) {
-    return [...steps, { step: event.step, tool: event.tool, message: event.message, status }];
+    return [
+      ...steps,
+      { step: event.step, tool: event.tool, message: event.message, status, route: event.route },
+    ];
   }
   const next = [...steps];
   next[index] = {
     ...next[index],
     status,
     message: event.status === "start" ? event.message : next[index].message,
+    route: event.route ?? next[index].route,
   };
   return next;
 }

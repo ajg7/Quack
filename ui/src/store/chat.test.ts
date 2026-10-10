@@ -1,7 +1,7 @@
 import type * as StreamModule from "../lib/stream";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import type { DoneEvent, StreamEvent } from "../lib/schemas";
-import { StreamHttpError, StreamInterruptedError } from "../lib/stream";
+import { StreamHttpError, StreamInterruptedError, StreamProtocolError } from "../lib/stream";
 import { applyProgress, describeFailure, useChatStore } from "./chat";
 
 const streamChat = vi.hoisted(() => vi.fn());
@@ -43,7 +43,34 @@ beforeEach(async () => {
   await useChatStore.getState().reset();
 });
 
+describe("describeFailure", () => {
+  it("explains a busy conversation", () => {
+    expect(describeFailure(new StreamHttpError(409))).toMatch(/still answering/);
+  });
+
+  it("says the response was unreadable for protocol errors", () => {
+    expect(describeFailure(new StreamProtocolError())).toMatch(/could not read/);
+  });
+});
+
 describe("applyProgress", () => {
+  it("records the route when a step finishes", () => {
+    const started = applyProgress([], {
+      status: "start",
+      step: 1,
+      tool: "semantic_search",
+      message: "Searching by meaning",
+    });
+    const finished = applyProgress(started, {
+      status: "done",
+      step: 1,
+      tool: "semantic_search",
+      message: "finished",
+      route: "rag",
+    });
+    expect(finished[0]).toMatchObject({ status: "done", route: "rag" });
+  });
+
   it("adds a running step on start", () => {
     const steps = applyProgress([], {
       status: "start",

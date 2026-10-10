@@ -5,6 +5,7 @@ from typing import Any, Iterator
 from langchain_core.callbacks import BaseCallbackHandler
 
 from quack import agent_lc, config, tracing
+from quack.tracing_lc import route_of
 
 
 class StreamCancelled(Exception):
@@ -21,8 +22,12 @@ def describe_tool_call(tool: str, args: dict | None) -> str:
     if tool == "query_database":
         flt = args.get("filter")
         return "Querying a database" + (" with a filter" if flt else "")
+    if tool == "aggregate_database":
+        return "Counting rows in a database"
     if tool == "get_page":
         return "Reading a page"
+    if tool == "semantic_search":
+        return f"Searching by meaning for \"{args.get('query', '')}\""
     return f"Running {tool}"
 
 
@@ -77,7 +82,7 @@ class StreamHandler(BaseCallbackHandler):
             }
         )
 
-    def _finish_tool(self, run_id, ok: bool) -> None:
+    def _finish_tool(self, run_id, ok: bool, content=None) -> None:
         info = self._tools.pop(run_id, None)
         if info is None:
             return
@@ -88,13 +93,16 @@ class StreamHandler(BaseCallbackHandler):
                     "status": "done" if ok else "error",
                     "step": info["step"],
                     "tool": info["tool"],
+                    "route": route_of(info["tool"], content),
                     "message": f"{info['tool']} finished" if ok else f"{info['tool']} failed",
                 },
             }
         )
 
     def on_tool_end(self, output, *, run_id, **kwargs) -> None:
-        self._finish_tool(run_id, getattr(output, "status", None) != "error")
+        self._finish_tool(
+            run_id, getattr(output, "status", None) != "error", getattr(output, "content", output)
+        )
 
     def on_tool_error(self, error, *, run_id, **kwargs) -> None:
         self._finish_tool(run_id, False)
@@ -124,6 +132,7 @@ def stream_events(question: str, history: list[dict] | None = None) -> Iterator[
                         "input_tokens": result.input_tokens,
                         "output_tokens": result.output_tokens,
                         "latency_ms": result.latency_ms,
+                        "budget_exhausted": getattr(result, "budget", {}).get("budget_exhausted"),
                     },
                 }
             )

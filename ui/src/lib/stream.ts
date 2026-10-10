@@ -10,6 +10,13 @@ export class StreamInterruptedError extends Error {
   }
 }
 
+export class StreamProtocolError extends Error {
+  constructor() {
+    super("The backend sent an event this page could not parse.");
+    this.name = "StreamProtocolError";
+  }
+}
+
 export class StreamHttpError extends Error {
   readonly status: number;
 
@@ -47,7 +54,12 @@ export async function streamChat({
       if (!type.startsWith("text/event-stream")) throw new StreamInterruptedError();
     },
     onmessage(raw) {
-      const event = parseStreamEvent(raw.event, raw.data);
+      let event: StreamEvent | null;
+      try {
+        event = parseStreamEvent(raw.event, raw.data);
+      } catch {
+        throw new StreamProtocolError();
+      }
       if (!event) return;
       if (event.type === "done" || event.type === "error") terminal = true;
       onEvent(event);

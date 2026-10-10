@@ -7,6 +7,7 @@ export const progressEventSchema = z.object({
   step: z.number(),
   tool: z.string(),
   message: z.string(),
+  route: z.string().optional(),
   args: z.record(z.string(), z.unknown()).optional(),
 });
 
@@ -20,6 +21,7 @@ export const doneEventSchema = z.object({
   input_tokens: z.number(),
   output_tokens: z.number(),
   latency_ms: z.number(),
+  budget_exhausted: z.string().nullish(),
 });
 
 export const errorEventSchema = z.object({

@@ -7,6 +7,8 @@ from fastapi.responses import StreamingResponse
 from pydantic import BaseModel, Field
 
 from quack import config, streaming
+from quack.retrieval import indexer
+from quack.retrieval.store import IndexUnavailable, get_store
 from quack.sessions import SessionStore
 from quack.tools.notion import list_data_sources
 
@@ -44,15 +46,29 @@ def sources() -> dict:
         raise HTTPException(status_code=502, detail=f"{type(e).__name__}: {e}"[:300]) from e
 
 
+@app.get("/index")
+def index_status() -> dict:
+    try:
+        stats = get_store().stats()
+    except IndexUnavailable:
+        return {"available": False, "chunks": 0, "pages": 0, "checkpoint": None}
+    return {"available": True, **stats, "checkpoint": indexer.load_checkpoint()}
+
+
 @app.post("/chat")
 def chat(request: ChatRequest) -> StreamingResponse:
+    if not sessions.try_begin_turn(request.session_id):
+        raise HTTPException(status_code=409, detail="The previous question is still being answered.")
     history = sessions.get(request.session_id)
 
     def generate() -> Iterator[str]:
-        for event in streaming.stream_events(request.message, history):
-            if event["event"] == "done":
-                sessions.append_turn(request.session_id, request.message, event["data"]["answer"])
-            yield format_sse(event)
+        try:
+            for event in streaming.stream_events(request.message, history):
+                if event["event"] == "done":
+                    sessions.append_turn(request.session_id, request.message, event["data"]["answer"])
+                yield format_sse(event)
+        finally:
+            sessions.end_turn(request.session_id)
 
     return StreamingResponse(
         generate(),

@@ -12,6 +12,11 @@ const TONE: Record<Step["status"], string> = {
   error: "text-danger",
 };
 
+const ROUTE_LABEL: Record<string, string> = {
+  rag: "index",
+  live_fallback: "live fallback",
+};
+
 export default function StepList({ steps }: { steps: Step[] }) {
   if (steps.length === 0) return null;
 
@@ -25,6 +30,7 @@ export default function StepList({ steps }: { steps: Step[] }) {
           <span>
             Step {step.step}: {step.message}
             {step.status === "error" ? " (failed)" : ""}
+            {step.route && ROUTE_LABEL[step.route] ? ` [${ROUTE_LABEL[step.route]}]` : ""}
           </span>
         </li>
       ))}

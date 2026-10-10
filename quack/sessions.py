@@ -26,6 +26,7 @@ class SessionStore:
         self._ttl_seconds = ttl_seconds
         self._clock = clock
         self._sessions: OrderedDict[str, _Session] = OrderedDict()
+        self._in_flight: dict[str, float] = {}
         self._lock = threading.Lock()
 
     def _evict_expired(self, now: float) -> None:
@@ -63,6 +64,19 @@ class SessionStore:
                 del messages[:overflow]
             while len(self._sessions) > self._max_sessions:
                 self._sessions.popitem(last=False)
+
+    def try_begin_turn(self, session_id: str) -> bool:
+        with self._lock:
+            now = self._clock()
+            started = self._in_flight.get(session_id)
+            if started is not None and now - started < config.TURN_LOCK_SECONDS:
+                return False
+            self._in_flight[session_id] = now
+            return True
+
+    def end_turn(self, session_id: str) -> None:
+        with self._lock:
+            self._in_flight.pop(session_id, None)
 
     def clear(self, session_id: str) -> bool:
         with self._lock:

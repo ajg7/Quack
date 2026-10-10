@@ -5,8 +5,7 @@ from uuid import UUID
 
 from langchain_core.callbacks import BaseCallbackHandler
 
-from quack import tracing
-from quack.integrations import notion
+from quack import budget, router, tracing
 
 
 def _is_partial(content: Any) -> bool:
@@ -17,6 +16,16 @@ def _is_partial(content: Any) -> bool:
     except ValueError:
         return False
     return isinstance(data, dict) and bool(data.get("partial"))
+
+
+def route_of(tool: str | None, content: Any) -> str:
+    result = None
+    if isinstance(content, str):
+        try:
+            result = json.loads(content)
+        except ValueError:
+            result = None
+    return router.route_for(tool or "", result)
 
 
 class TraceHandler(BaseCallbackHandler):
@@ -61,8 +70,7 @@ class TraceHandler(BaseCallbackHandler):
             "args": inputs if inputs is not None else input_str,
             "turn": self.turns,
             "started": time.perf_counter(),
-            "requests": notion.stats.requests,
-            "rate_limited": notion.stats.rate_limited,
+            "counters": budget.snapshot(),
         }
 
     def on_tool_end(self, output, *, run_id: UUID, **kwargs) -> None:
@@ -77,16 +85,19 @@ class TraceHandler(BaseCallbackHandler):
         run = self._tool_runs.pop(run_id, None)
         if run is None:
             return
+        requests, rate_limited, cache_hits = budget.snapshot()
         tracing.emit(
             "tool_call",
             self.request_id,
             turn=run["turn"],
             tool=run["tool"],
+            route=route_of(run["tool"], content),
             args=run["args"],
             is_error=is_error,
             partial=_is_partial(content),
-            notion_requests=notion.stats.requests - run["requests"],
-            notion_rate_limited=notion.stats.rate_limited - run["rate_limited"],
+            notion_requests=requests - run["counters"][0],
+            notion_rate_limited=rate_limited - run["counters"][1],
+            cache_hits=cache_hits - run["counters"][2],
             output_chars=len(content) if isinstance(content, str) else len(str(content)),
             latency_ms=round((time.perf_counter() - run["started"]) * 1000),
         )

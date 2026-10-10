@@ -1,3 +1,4 @@
+from quack import config
 from quack.sessions import SessionStore
 
 
@@ -122,3 +123,25 @@ def test_least_recently_used_session_is_evicted_at_capacity():
     assert store.get("b") == []
     assert store.get("a") != []
     assert store.get("c") != []
+
+
+def test_only_one_turn_per_session_may_be_in_flight():
+    store = SessionStore()
+
+    assert store.try_begin_turn("a") is True
+    assert store.try_begin_turn("a") is False
+    assert store.try_begin_turn("b") is True
+
+    store.end_turn("a")
+
+    assert store.try_begin_turn("a") is True
+
+
+def test_an_abandoned_turn_lock_expires():
+    now = [0.0]
+    store = SessionStore(clock=lambda: now[0])
+    store.try_begin_turn("a")
+
+    now[0] = config.TURN_LOCK_SECONDS + 1
+
+    assert store.try_begin_turn("a") is True

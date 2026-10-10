@@ -13,15 +13,17 @@ This is a learning project, so how Claude helps matters as much as what gets bui
 - **Fair game for Claude without asking:** scaffolding, `__init__.py` files, config constants, requirements, `.gitignore`, tests (fixtures and cases, not limited to pure functions — AJ doesn't need to write tests), and docs.
 - **Reviewing AJ's code:** point at the line and say what's wrong and why. Suggest the direction of the fix and let AJ make it. Don't paste a rewritten version.
 - **At a milestone boundary:** name the checkpoint from `docs/PLAN.md` and have AJ do it before moving on. Don't mark a milestone done because the code runs.
-- **Scope:** don't pull later phases forward. No LangChain before Phase 2, no FastAPI or UI before Milestone 2.3, no Chroma or embeddings before Phase 4.
+- **Scope:** all four planned phases are built. New work needs an entry in `docs/PLAN.md` first.
 
 ## Current status
 
-Phase 2 code complete (2026-10-10); next is Phase 3, Milestone 3.1 (eval set).
+All four phases are code complete (2026-10-10). AJ asked Claude to finish the project, so Claude wrote the learning-critical files for Phases 3 and 4 under an explicit override; the sidekick rules apply again from here. What remains is AJ's: the eval questions in `evals/questions.json` (ground truth must be verified by AJ), and every comprehension checkpoint in `docs/PLAN.md`.
 
 - Done: hand-rolled loop (`quack/agent.py`), Notion client, tracing, LangChain port (`--lc`), three tools, FastAPI + SSE chat API, React chat UI in `ui/` (`npm run check` and mocked e2e green; real-backend e2e behind `QUACK_E2E_REAL=1`).
 - Checkpoints not done (code finished, comprehension checks skipped or pending): 1.1, 1.2, 1.3, 2.1, 2.2 (8-question tool-choice test), 2.3 (kill the backend mid-answer). Details in `.claude/build-progress/quack.md`.
-- Known Phase 3 inputs: `search_notion` returns every match (large token cost); no step or request budget yet; `AJ_GEBARA_PAGE_ID` ranking never fires on live data.
+- Phase 3 additions: per-question `Budget` in `quack/budget.py` (tool steps, Notion requests, deadline; a trip makes tools return a stop instruction and forces a final answer), TTL response cache in the Notion client, `search_notion` limit + `truncated`, `aggregate_database` (server-side counts and group-by over up to 2000 rows; added after the first eval run failed a counting question on the 100-row cap), parallel tool calls in the raw loop, `python -m evals` runner scoring answer and trace separately.
+- Phase 4 additions: `quack/retrieval/` (chunker, Chroma store, incremental indexer), `quack/router.py` (route per tool call, staleness check, live fallback), `semantic_search` tool, `python -m quack index`, `GET /index`. The index lives in `.chroma/` (gitignored, derived data). First eval run on 2026-10-10: 14/15 correct, then 15/15 after `aggregate_database`; the 15 questions are Claude-drafted from live data and marked `"draft": true` until AJ verifies them.
+- Still open: `AJ_GEBARA_PAGE_ID` ranking never fires on live data.
 
 ## Layout (Phase 1 target)
 
@@ -83,7 +85,9 @@ cd ui && npm run dev                    # chat UI on :5173 (needs the API runnin
                                         # UI stack: React+TS, Tailwind v4, Zustand, axios, @microsoft/fetch-event-source, TanStack Query
 cd ui && npm run check                  # typecheck + oxlint + prettier + vitest
 cd ui && npm run e2e                    # Playwright (mocked backend)
-python -m pytest                        # add pytest to requirements first
+python -m pytest
+python -m quack index [--full] [--limit N]   # build/refresh the Chroma index (read-only against Notion)
+python -m evals [--ids a,b] [--repeat N]     # score Quack against evals/questions.json (live API)
 ```
 
 ## Conventions

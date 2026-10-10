@@ -84,6 +84,37 @@ describe("App", () => {
     expect(screen.getByRole("button", { name: "Send" })).toBeEnabled();
   });
 
+  it("labels index results and warns when the budget ran out", async () => {
+    script([
+      {
+        type: "progress",
+        data: {
+          status: "start",
+          step: 1,
+          tool: "semantic_search",
+          message: "Searching by meaning",
+        },
+      },
+      {
+        type: "progress",
+        data: {
+          status: "done",
+          step: 1,
+          tool: "semantic_search",
+          message: "semantic_search finished",
+          route: "rag",
+        },
+      },
+      { type: "done", data: { ...DONE, budget_exhausted: "requests" } },
+    ]);
+    renderWithClient(<App />);
+
+    await userEvent.type(screen.getByLabelText("Message"), "tenses?{Enter}");
+
+    expect(await screen.findByText("Step 1: Searching by meaning [index]")).toBeInTheDocument();
+    expect(screen.getByText(/reached its Notion request limit/)).toBeInTheDocument();
+  });
+
   it("sends on Enter, renders steps and markdown, and clears the box", async () => {
     script([
       {

@@ -1,10 +1,16 @@
+import json
 import threading
 import time
+from collections.abc import Callable
 from dataclasses import dataclass, field
 
 import requests
 
-from quack import config
+from quack import budget, config
+from quack.cache import TTLCache
+
+RATE_LIMIT = "rate_limit"
+BUDGET = "budget"
 
 
 @dataclass
@@ -12,12 +18,7 @@ class NotionResults:
   results: list[dict] = field(default_factory=list)
   partial: bool = False
   has_more: bool = False
-
-
-@dataclass
-class NotionStats:
-  requests: int = 0
-  rate_limited: int = 0
+  reason: str = ""
 
 
 class NotionRateLimitError(Exception):
@@ -40,22 +41,38 @@ class RateLimiter:
 
 
 _limiter = RateLimiter(config.NOTION_RATE_LIMIT_PER_SEC)
-stats = NotionStats()
+_cache = TTLCache(config.NOTION_CACHE_TTL_SECONDS, config.NOTION_CACHE_MAX_ENTRIES)
+
+
+def clear_cache() -> None:
+  _cache.clear()
+
+
+def _cache_key(method: str, path: str, kwargs: dict) -> str:
+  return json.dumps([method, path, kwargs.get("params"), kwargs.get("json")], sort_keys=True, default=str)
 
 
 def _retry_after(response: requests.Response) -> float:
   try:
-    return max(0.0, float(response.headers["Retry-After"]))
+    requested = max(0.0, float(response.headers["Retry-After"]))
+    return min(requested, config.NOTION_MAX_RETRY_AFTER)
   except (KeyError, ValueError):
     return config.NOTION_DEFAULT_RETRY_AFTER
 
 
 def _request(method: str, path: str, **kwargs) -> dict:
+  fresh = kwargs.pop("fresh", False)
   url = f"{config.NOTION_API}{path}"
+  key = _cache_key(method, path, kwargs)
+
+  cached = None if fresh else _cache.get(key)
+  if cached is not None:
+    budget.note_cache_hit()
+    return cached
 
   for attempt in range(config.NOTION_MAX_RETRIES + 1):
+    budget.charge_request()
     _limiter.acquire()
-    stats.requests += 1
     response = requests.request(
       method,
       url,
@@ -65,10 +82,12 @@ def _request(method: str, path: str, **kwargs) -> dict:
     )
 
     if response.status_code == 200:
-      return response.json()
+      data = response.json()
+      _cache.put(key, data)
+      return data
 
     if response.status_code == 429:
-      stats.rate_limited += 1
+      budget.note_rate_limited()
       if attempt < config.NOTION_MAX_RETRIES:
         time.sleep(_retry_after(response))
       continue
@@ -82,10 +101,16 @@ def _request(method: str, path: str, **kwargs) -> dict:
 
 
 def _paginate(
-  method: str, path: str, payload: dict | None = None, limit: int | None = None
+  method: str,
+  path: str,
+  payload: dict | None = None,
+  limit: int | None = None,
+  fresh: bool = False,
+  stop_when: Callable[[dict], bool] | None = None,
 ) -> NotionResults:
   results: list[dict] = []
   cursor = None
+  bypass = {"fresh": True} if fresh else {}
 
   while True:
     body = dict(payload or {})
@@ -96,13 +121,21 @@ def _paginate(
 
     try:
       if method == "GET":
-        data = _request(method, path, params=body)
+        data = _request(method, path, params=body, **bypass)
       else:
-        data = _request(method, path, json=body)
+        data = _request(method, path, json=body, **bypass)
     except NotionRateLimitError:
-      return NotionResults(results, partial=True, has_more=True)
+      return NotionResults(results, partial=True, has_more=True, reason=RATE_LIMIT)
+    except budget.BudgetExceeded:
+      return NotionResults(results, partial=True, has_more=True, reason=BUDGET)
 
-    results.extend(data.get("results", []))
+    batch = data.get("results", [])
+    if stop_when:
+      cut = next((i for i, item in enumerate(batch) if stop_when(item)), None)
+      if cut is not None:
+        results.extend(batch[:cut])
+        return NotionResults(results)
+    results.extend(batch)
     more_available = data.get("has_more", False)
 
     if limit is not None and len(results) >= limit:
@@ -120,12 +153,21 @@ def query_data_source(
   return _paginate("POST", f"/data_sources/{data_source_id}/query", payload, limit)
 
 
-def get_page(page_id: str) -> dict:
-  return _request("GET", f"/pages/{page_id}")
+def get_page(page_id: str, fresh: bool = False) -> dict:
+  return _request("GET", f"/pages/{page_id}", **({"fresh": True} if fresh else {}))
 
 
-def get_page_blocks(page_id: str) -> NotionResults:
-  return _paginate("GET", f"/blocks/{page_id}/children")
+def get_page_blocks(page_id: str, fresh: bool = False) -> NotionResults:
+  return _paginate("GET", f"/blocks/{page_id}/children", fresh=fresh)
+
+
+def search_edited_since(since: str | None = None) -> NotionResults:
+  payload = {
+    "filter": {"property": "object", "value": "page"},
+    "sort": {"direction": "descending", "timestamp": "last_edited_time"},
+  }
+  stop_when = (lambda item: item.get("last_edited_time", "") < since) if since else None
+  return _paginate("POST", "/search", payload, fresh=True, stop_when=stop_when)
 
 
 def blocks_to_text(blocks: list[dict]) -> str:
@@ -139,8 +181,8 @@ def blocks_to_text(blocks: list[dict]) -> str:
   return "\n".join(lines)
 
 
-def search(query: str, filters: dict | None = None) -> NotionResults:
+def search(query: str, filters: dict | None = None, limit: int | None = None) -> NotionResults:
   payload = {"query": query}
   if filters:
     payload["filter"] = filters
-  return _paginate("POST", "/search", payload)
+  return _paginate("POST", "/search", payload, limit)

@@ -1,0 +1,206 @@
+[
+  {
+    "id": "active-odysseys-without-crucible",
+    "question": "Which Active Odysseys have no Crucible tasks yet?",
+    "must_include": [
+      "Self-Made Man Dating Journal",
+      "Fencing Journal Entries",
+      "Arabic Anki Sets"
+    ],
+    "max_tool_calls": 8,
+    "max_requests": 30,
+    "draft": true,
+    "notes": "Draft ground truth computed from the live API on 2026-10-10; AJ must verify before trusting."
+  },
+  {
+    "id": "october-odysseys-without-crucible",
+    "question": "Which October Odysseys have no Crucible tasks yet?",
+    "must_include": [
+      "8",
+      [
+        "Fallacy Hunter"
+      ],
+      "Earn Every GitHub Achievement",
+      "Self-Made Man Dating Journal",
+      "Fencing Journal Entries",
+      "Revelation 13",
+      "Arabic Anki Sets",
+      "System Design Anki Sets",
+      "Leetcode Anki Sets"
+    ],
+    "max_tool_calls": 10,
+    "max_requests": 40,
+    "draft": true,
+    "notes": "Draft ground truth computed from the live API on 2026-10-10; AJ must verify before trusting."
+  },
+  {
+    "id": "trig-open-tasks",
+    "question": "How many open (Todo) Crucible tasks does the Krista King: Trigonometry Odyssey have?",
+    "must_include": [
+      "17"
+    ],
+    "max_tool_calls": 8,
+    "max_requests": 30,
+    "draft": true,
+    "notes": "Draft ground truth computed from the live API on 2026-10-10; AJ must verify before trusting."
+  },
+  {
+    "id": "enthumeo-open-tasks",
+    "question": "How many open (Todo) Crucible tasks does the Enthumeo MVP Odyssey have?",
+    "must_include": [
+      "24"
+    ],
+    "max_tool_calls": 8,
+    "max_requests": 30,
+    "draft": true,
+    "notes": "Draft ground truth computed from the live API on 2026-10-10; AJ must verify before trusting."
+  },
+  {
+    "id": "active-ultimates-without-rituals",
+    "question": "Which Active Ultimates have no Agoge rituals?",
+    "must_include": [
+      "7",
+      "Claude AI Architect",
+      "Ocarina Player",
+      "Indie Game Developer",
+      "Apex Coder",
+      "Content Creator",
+      "Guitarist",
+      "AI & NLP Engineer"
+    ],
+    "max_tool_calls": 8,
+    "max_requests": 30,
+    "draft": true,
+    "notes": "Draft ground truth computed from the live API on 2026-10-10; AJ must verify before trusting."
+  },
+  {
+    "id": "ultimate-most-crucible",
+    "question": "Which Ultimate has the most Crucible tasks, and how many does it have?",
+    "must_include": [
+      "Software Engineer",
+      "163"
+    ],
+    "max_tool_calls": 8,
+    "max_requests": 30,
+    "draft": true,
+    "notes": "Draft ground truth computed from the live API on 2026-10-10; AJ must verify before trusting."
+  },
+  {
+    "id": "monday-ritual-ultimates",
+    "question": "Which Ultimates do my Monday Agoge rituals belong to?",
+    "must_include": [
+      "Arabic",
+      "Autodidact",
+      "Biblical Language Enthusiast",
+      "Dating/Marriage",
+      "Leader",
+      "Software Engineer",
+      "Wise Sage"
+    ],
+    "max_tool_calls": 8,
+    "max_requests": 30,
+    "draft": true,
+    "notes": "Draft ground truth computed from the live API on 2026-10-10; AJ must verify before trusting."
+  },
+  {
+    "id": "inferno-wednesday",
+    "question": "Which Inferno item is due on Wednesday, and which day do I work on it?",
+    "must_include": [
+      "Waajib",
+      "Saturday"
+    ],
+    "max_tool_calls": 4,
+    "max_requests": 15,
+    "draft": true,
+    "notes": "Draft ground truth computed from the live API on 2026-10-10; AJ must verify before trusting."
+  },
+  {
+    "id": "done-odysseys",
+    "question": "Which Odysseys have a Done status?",
+    "must_include": [
+      "Neetcode: System Design Interview",
+      "Neetcode: System Design for Beginners"
+    ],
+    "max_tool_calls": 4,
+    "max_requests": 15,
+    "draft": true,
+    "notes": "Draft ground truth computed from the live API on 2026-10-10; AJ must verify before trusting."
+  },
+  {
+    "id": "friday-todo-count",
+    "question": "How many Todo Crucible tasks are scheduled for Friday?",
+    "must_include": [
+      "70"
+    ],
+    "max_tool_calls": 4,
+    "max_requests": 15,
+    "draft": true,
+    "notes": "Draft ground truth computed from the live API on 2026-10-10; AJ must verify before trusting."
+  },
+  {
+    "id": "fuzzy-coping",
+    "question": "Where did I write about coping strategies?",
+    "must_include": [
+      "Map out all Routines and Coping Strategies"
+    ],
+    "max_tool_calls": 4,
+    "max_requests": 15,
+    "draft": true,
+    "notes": "Draft ground truth computed from the live API on 2026-10-10; AJ must verify before trusting.",
+    "expect_route": "rag"
+  },
+  {
+    "id": "fuzzy-fencing-footwork",
+    "question": "Where do I keep my notes on fencing footwork?",
+    "must_include": [
+      [
+        "Piste Forge",
+        "Fencing Journal"
+      ]
+    ],
+    "max_tool_calls": 4,
+    "max_requests": 15,
+    "draft": true,
+    "notes": "Draft ground truth computed from the live API on 2026-10-10; AJ must verify before trusting.",
+    "expect_route": "rag"
+  },
+  {
+    "id": "fuzzy-blender-hard-surface",
+    "question": "Which of my pages cover Blender hard surface modeling?",
+    "must_include": [
+      "Hard Surface Modeling"
+    ],
+    "max_tool_calls": 4,
+    "max_requests": 15,
+    "draft": true,
+    "notes": "Draft ground truth computed from the live API on 2026-10-10; AJ must verify before trusting.",
+    "expect_route": "rag"
+  },
+  {
+    "id": "fuzzy-learning-mode",
+    "question": "Which page covers the learning mode for my agent coach?",
+    "must_include": [
+      "Theoros VI"
+    ],
+    "max_tool_calls": 4,
+    "max_requests": 15,
+    "draft": true,
+    "notes": "Draft ground truth computed from the live API on 2026-10-10; AJ must verify before trusting.",
+    "expect_route": "rag"
+  },
+  {
+    "id": "fuzzy-system-design-guides",
+    "question": "Where are my system design interview study guides?",
+    "must_include": [
+      [
+        "Hello Interview",
+        "Primer"
+      ]
+    ],
+    "max_tool_calls": 4,
+    "max_requests": 15,
+    "draft": true,
+    "notes": "Draft ground truth computed from the live API on 2026-10-10; AJ must verify before trusting.",
+    "expect_route": "rag"
+  }
+]

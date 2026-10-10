@@ -31,6 +31,39 @@ describe("parseStreamEvent", () => {
     expect(event?.type).toBe("progress");
   });
 
+  it("keeps the route on a finished step", () => {
+    const event = parseStreamEvent(
+      "progress",
+      JSON.stringify({
+        status: "done",
+        step: 1,
+        tool: "semantic_search",
+        message: "finished",
+        route: "rag",
+      }),
+    );
+    expect(event).toMatchObject({ type: "progress", data: { route: "rag" } });
+  });
+
+  it("accepts a done event with and without a budget flag", () => {
+    const base = {
+      answer: "a",
+      request_id: "r",
+      turns: 1,
+      tool_calls: 0,
+      input_tokens: 1,
+      output_tokens: 1,
+      latency_ms: 1,
+    };
+    expect(parseStreamEvent("done", JSON.stringify(base))?.type).toBe("done");
+    expect(
+      parseStreamEvent("done", JSON.stringify({ ...base, budget_exhausted: "steps" })),
+    ).toMatchObject({ data: { budget_exhausted: "steps" } });
+    expect(
+      parseStreamEvent("done", JSON.stringify({ ...base, budget_exhausted: null }))?.type,
+    ).toBe("done");
+  });
+
   it("rejects a malformed payload", () => {
     expect(() => parseStreamEvent("progress", '{"status":"bogus"}')).toThrow();
   });

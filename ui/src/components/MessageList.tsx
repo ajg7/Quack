@@ -3,6 +3,8 @@ import { useChatStore } from "../store/chat";
 import MessageBubble from "./MessageBubble";
 import SourcesPanel from "./SourcesPanel";
 
+const NEAR_BOTTOM_PX = 80;
+
 const EXAMPLES = [
   "What are today's Agoge rituals?",
   "Which Odysseys are in progress?",
@@ -40,9 +42,20 @@ export default function MessageList() {
   const messages = useChatStore((state) => state.messages);
   const bottom = useRef<HTMLDivElement>(null);
 
+  const pinned = useRef(true);
+
   useEffect(() => {
-    bottom.current?.scrollIntoView?.({ block: "end" });
-  });
+    const onScroll = () => {
+      const distance = document.documentElement.scrollHeight - window.innerHeight - window.scrollY;
+      pinned.current = distance < NEAR_BOTTOM_PX;
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  useEffect(() => {
+    if (pinned.current) bottom.current?.scrollIntoView?.({ block: "end" });
+  }, [messages]);
 
   return (
     <div className="mx-auto w-full max-w-3xl flex-1 px-4">

@@ -14,5 +14,8 @@ __pycache__/
 # Generated briefings
 briefings/
 
+# Chroma index (derived data)
+.chroma/
+
 # Trace output
 traces/

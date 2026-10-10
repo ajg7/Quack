@@ -4,7 +4,7 @@ import time
 import pytest
 import requests
 
-from quack import config, tracing
+from quack import budget, config, tracing
 from quack.integrations import notion
 from quack.integrations.notion import NotionRateLimitError, NotionResults, RateLimiter
 
@@ -26,10 +26,13 @@ class NoLimiter:
 
 
 @pytest.fixture(autouse=True)
-def fresh_stats_and_no_limiter(monkeypatch):
+def run_budget(monkeypatch):
     monkeypatch.setattr(notion, "_limiter", NoLimiter())
-    monkeypatch.setattr(notion, "stats", notion.NotionStats())
     monkeypatch.setattr(config, "notion_headers", lambda: {})
+    notion.clear_cache()
+    with budget.activate(budget.Budget(max_requests=1000)) as active:
+        yield active
+    notion.clear_cache()
 
 
 @pytest.fixture
@@ -73,15 +76,15 @@ def test_retry_after_defaults_when_missing_or_garbage():
     assert notion._retry_after(bad) == config.NOTION_DEFAULT_RETRY_AFTER
 
 
-def test_request_returns_json_on_200(monkeypatch, sleeps):
+def test_request_returns_json_on_200(monkeypatch, sleeps, run_budget):
     script_responses(monkeypatch, [FakeResponse(200, {"ok": True})])
 
     assert notion._request("GET", "/x") == {"ok": True}
-    assert notion.stats.requests == 1
-    assert notion.stats.rate_limited == 0
+    assert run_budget.requests == 1
+    assert run_budget.rate_limited == 0
 
 
-def test_request_retries_after_429_and_honors_retry_after(monkeypatch, sleeps):
+def test_request_retries_after_429_and_honors_retry_after(monkeypatch, sleeps, run_budget):
     script_responses(
         monkeypatch,
         [FakeResponse(429, headers={"Retry-After": "2"}), FakeResponse(200, {"ok": True})],
@@ -89,19 +92,19 @@ def test_request_retries_after_429_and_honors_retry_after(monkeypatch, sleeps):
 
     assert notion._request("GET", "/x") == {"ok": True}
     assert sleeps == [2.0]
-    assert notion.stats.requests == 2
-    assert notion.stats.rate_limited == 1
+    assert run_budget.requests == 2
+    assert run_budget.rate_limited == 1
 
 
-def test_request_raises_after_exhausting_retries(monkeypatch, sleeps):
+def test_request_raises_after_exhausting_retries(monkeypatch, sleeps, run_budget):
     attempts = config.NOTION_MAX_RETRIES + 1
     script_responses(monkeypatch, [FakeResponse(429)] * attempts)
 
     with pytest.raises(NotionRateLimitError):
         notion._request("GET", "/x")
 
-    assert notion.stats.requests == attempts
-    assert notion.stats.rate_limited == attempts
+    assert run_budget.requests == attempts
+    assert run_budget.rate_limited == attempts
 
 
 def test_request_does_not_sleep_after_final_attempt(monkeypatch, sleeps):
@@ -113,13 +116,13 @@ def test_request_does_not_sleep_after_final_attempt(monkeypatch, sleeps):
     assert len(sleeps) == config.NOTION_MAX_RETRIES
 
 
-def test_request_raises_http_error_with_body_on_other_status(monkeypatch, sleeps):
+def test_request_raises_http_error_with_body_on_other_status(monkeypatch, sleeps, run_budget):
     script_responses(monkeypatch, [FakeResponse(400, {"message": "bad filter"})])
 
     with pytest.raises(requests.exceptions.HTTPError, match="bad filter"):
         notion._request("POST", "/x")
 
-    assert notion.stats.requests == 1
+    assert run_budget.requests == 1
 
 
 def test_paginate_follows_cursor_until_exhausted(monkeypatch):
@@ -179,7 +182,7 @@ def test_paginate_partial_and_empty_when_first_request_fails(monkeypatch):
 
     out = notion._paginate("POST", "/search", {})
 
-    assert out == NotionResults([], partial=True, has_more=True)
+    assert out == NotionResults([], partial=True, has_more=True, reason=notion.RATE_LIMIT)
 
 
 def scripted_pages(monkeypatch, pages):

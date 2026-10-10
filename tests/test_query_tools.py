@@ -26,10 +26,16 @@ def patch_query(monkeypatch, results, partial=False, has_more=False):
     return calls
 
 
-def test_registry_has_three_tools_with_matching_handlers():
+def test_registry_has_five_tools_with_matching_handlers():
     names = [schema["name"] for schema in SCHEMAS]
 
-    assert names == ["search_notion", "query_database", "get_page"]
+    assert names == [
+        "search_notion",
+        "query_database",
+        "aggregate_database",
+        "get_page",
+        "semantic_search",
+    ]
     assert set(HANDLERS) == set(names)
 
 
@@ -39,7 +45,9 @@ def test_every_schema_requires_its_key_argument():
     assert required == {
         "search_notion": ["query"],
         "query_database": ["data_source_id"],
+        "aggregate_database": ["data_source_id"],
         "get_page": ["page_id"],
+        "semantic_search": ["query"],
     }
 
 

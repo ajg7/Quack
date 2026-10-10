@@ -17,7 +17,7 @@ def load_search_results():
 
 def run_search_full(monkeypatch, raw_results, partial=False):
     monkeypatch.setattr(
-        notion_tools.notion, "search", lambda query: NotionResults(raw_results, partial=partial)
+        notion_tools.notion, "search", lambda query, **kwargs: NotionResults(raw_results, partial=partial)
     )
     return search_notion("anything")
 
@@ -139,7 +139,7 @@ def test_empty_search_returns_empty_list(monkeypatch):
 def test_query_is_forwarded_to_notion(monkeypatch):
     seen = []
     monkeypatch.setattr(
-        notion_tools.notion, "search", lambda query: seen.append(query) or NotionResults()
+        notion_tools.notion, "search", lambda query, **kwargs: seen.append(query) or NotionResults()
     )
 
     search_notion("agoge rituals")
