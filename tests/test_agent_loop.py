@@ -11,8 +11,8 @@ def text(content):
     return SimpleNamespace(type="text", text=content)
 
 
-def tool_use(id, name="search_notion", **args):
-    return SimpleNamespace(type="tool_use", id=id, name=name, input=args)
+def tool_use(tool_id, name="search_notion", **args):
+    return SimpleNamespace(type="tool_use", id=tool_id, name=name, input=args)
 
 
 def response(blocks, stop_reason):

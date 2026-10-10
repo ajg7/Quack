@@ -1,0 +1,30 @@
+[MASTER]
+py-version=3.10
+
+[MESSAGES CONTROL]
+disable=missing-module-docstring,
+        missing-class-docstring,
+        missing-function-docstring,
+        bad-indentation,
+        redefined-outer-name,
+        redefined-builtin,
+        protected-access,
+        unused-argument,
+        too-few-public-methods,
+        too-many-instance-attributes,
+        too-many-arguments,
+        too-many-positional-arguments,
+        too-many-locals,
+        too-many-statements,
+        too-many-branches,
+        too-many-return-statements,
+        broad-exception-caught,
+        import-outside-toplevel,
+        global-statement,
+        wrong-import-order,
+        ungrouped-imports,
+        duplicate-code,
+        invalid-name
+
+[FORMAT]
+max-line-length=140

@@ -38,7 +38,7 @@ def run_budget(monkeypatch):
 @pytest.fixture
 def sleeps(monkeypatch):
     recorded = []
-    monkeypatch.setattr(notion.time, "sleep", lambda s: recorded.append(s))
+    monkeypatch.setattr(notion.time, "sleep", recorded.append)
     return recorded
 
 

@@ -133,7 +133,7 @@ def test_no_primary_children_keeps_original_order(monkeypatch):
 
 
 def test_empty_search_returns_empty_list(monkeypatch):
-    assert run_search(monkeypatch, []) == []
+    assert not run_search(monkeypatch, [])
 
 
 def test_query_is_forwarded_to_notion(monkeypatch):

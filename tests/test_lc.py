@@ -3,11 +3,11 @@ from types import SimpleNamespace
 from uuid import uuid4
 
 import pytest
+from langchain_core.tools import ToolException
 
 from quack import config, tracing
 from quack.agent_lc import _extract_text, _report_errors_to_model
 from quack.tracing_lc import TraceHandler, _is_partial
-from langchain_core.tools import ToolException
 
 
 @pytest.fixture

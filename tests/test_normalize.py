@@ -133,5 +133,5 @@ def test_unsupported_types_are_omitted():
 
 
 def test_empty_properties():
-    assert normalize_properties({}) == {}
-    assert normalize_row({"id": "x"})["properties"] == {}
+    assert not normalize_properties({})
+    assert not normalize_row({"id": "x"})["properties"]

@@ -117,7 +117,7 @@ def test_paginate_returns_partial_with_budget_reason(monkeypatch):
 
 def test_retry_after_is_capped(monkeypatch):
     waits = []
-    monkeypatch.setattr(notion.time, "sleep", lambda s: waits.append(s))
+    monkeypatch.setattr(notion.time, "sleep", waits.append)
     script(monkeypatch, [FakeResponse(429, headers={"Retry-After": "3600"}), FakeResponse(200, {"n": 1})])
 
     notion._request("GET", "/x")

@@ -59,7 +59,7 @@ def test_chunker_hard_splits_a_long_line_with_overlap():
 
 
 def test_chunker_returns_nothing_for_blank_text():
-    assert chunk_text("  \n\n ") == []
+    assert not chunk_text("  \n\n ")
 
 
 def test_chunker_rejects_overlap_not_smaller_than_size():

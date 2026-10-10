@@ -95,7 +95,7 @@ def test_handler_ignores_tool_end_without_start():
 
     handler.on_tool_end(SimpleNamespace(status="success"), run_id=uuid4())
 
-    assert drain(q) == []
+    assert not drain(q)
 
 
 def test_handler_raises_once_cancelled():

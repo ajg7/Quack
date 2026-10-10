@@ -15,7 +15,7 @@ def test_answer_passes_when_every_expected_fragment_is_present():
     score = scoring.score_answer("You have **10** rituals: Pray, Read.", ["10", "pray", "read"])
 
     assert score.passed is True
-    assert score.missing == []
+    assert not score.missing
 
 
 def test_answer_reports_missing_fragments():
