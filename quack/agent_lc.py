@@ -63,14 +63,14 @@ def answer_when_out_of_budget(request, handler):
     return handler(request)
 
 
-def _build_model(streaming: bool = False) -> ChatAnthropic:
+def _build_model(model: str, streaming: bool = False) -> ChatAnthropic:
     config.require("ANTHROPIC_API_KEY")
     kwargs = {}
     workspace_id = os.environ.get("ANTHROPIC_WORKSPACE_ID")
     if workspace_id:
         kwargs["default_headers"] = {"anthropic-workspace-id": workspace_id}
     return ChatAnthropic(
-        model=config.MODEL,
+        model=model,
         max_tokens=config.MAX_TOKENS,
         streaming=streaming,
         timeout=config.LLM_TIMEOUT_SECONDS,
@@ -94,13 +94,14 @@ def run(
     history: list[dict] | None = None,
     handlers: list | None = None,
     request_id: str | None = None,
+    model: str = config.MODEL,
 ) -> RunResult:
     request_id = request_id or tracing.new_request_id()
     started = time.perf_counter()
     extra_handlers = list(handlers or [])
 
     agent = create_agent(
-        _build_model(streaming=bool(extra_handlers)),
+        _build_model(model, streaming=bool(extra_handlers)),
         tools,
         system_prompt=load_system_prompt(),
         middleware=[answer_when_out_of_budget],
@@ -111,7 +112,7 @@ def run(
         "question_start",
         request_id,
         question=question,
-        model=config.MODEL,
+        model=model,
         framework="langchain",
         history_messages=len(history or []),
     )

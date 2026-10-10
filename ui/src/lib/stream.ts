@@ -30,6 +30,7 @@ export class StreamHttpError extends Error {
 interface StreamChatOptions {
   sessionId: string;
   message: string;
+  model?: string;
   signal: AbortSignal;
   onEvent: (event: StreamEvent) => void;
 }
@@ -37,6 +38,7 @@ interface StreamChatOptions {
 export async function streamChat({
   sessionId,
   message,
+  model,
   signal,
   onEvent,
 }: StreamChatOptions): Promise<void> {
@@ -45,7 +47,7 @@ export async function streamChat({
   await fetchEventSource(`${API_URL}/chat`, {
     method: "POST",
     headers: { "Content-Type": "application/json", Accept: "text/event-stream" },
-    body: JSON.stringify({ session_id: sessionId, message }),
+    body: JSON.stringify({ session_id: sessionId, message, model }),
     signal,
     openWhenHidden: true,
     async onopen(response) {

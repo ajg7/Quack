@@ -112,7 +112,9 @@ def _public_error_message(request_id: str) -> str:
     return f"Quack hit an internal error and could not finish this answer. Reference: {request_id}."
 
 
-def stream_events(question: str, history: list[dict] | None = None) -> Iterator[dict]:
+def stream_events(
+    question: str, history: list[dict] | None = None, model: str | None = None
+) -> Iterator[dict]:
     events: "queue.Queue" = queue.Queue()
     cancelled = threading.Event()
     request_id = tracing.new_request_id()
@@ -120,7 +122,7 @@ def stream_events(question: str, history: list[dict] | None = None) -> Iterator[
 
     def worker() -> None:
         try:
-            result = agent_lc.run(question, history, [handler], request_id)
+            result = agent_lc.run(question, history, [handler], request_id, model)
             events.put(
                 {
                     "event": "done",

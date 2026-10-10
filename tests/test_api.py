@@ -26,9 +26,9 @@ def client(monkeypatch):
 
 
 def fake_stream(answer="the answer", calls=None):
-    def stream(question, history=None):
+    def stream(question, history=None, model=None):
         if calls is not None:
-            calls.append({"question": question, "history": history})
+            calls.append({"question": question, "history": history, "model": model})
         yield {"event": "start", "data": {"request_id": "r1"}}
         yield {"event": "progress", "data": {"status": "start", "step": 1, "tool": "search_notion", "message": "m"}}
         yield {"event": "token", "data": {"text": "the "}}
@@ -49,6 +49,39 @@ def test_health(client):
 
     assert response.status_code == 200
     assert response.json() == {"status": "ok", "model": config.MODEL}
+
+
+def test_models_lists_choices_with_opus_default(client):
+    body = client.get("/models").json()
+
+    assert body["default"] == "claude-opus-5-5"
+    assert [m["id"] for m in body["models"]] == ["claude-opus-5-5", "claude-sonnet-5-5"]
+
+
+def test_chat_passes_selected_model_to_the_stream(client, monkeypatch):
+    calls = []
+    monkeypatch.setattr(api.streaming, "stream_events", fake_stream(calls=calls))
+
+    client.post("/chat", json={"session_id": "s", "message": "hi", "model": "claude-sonnet-5-5"})
+
+    assert calls[0]["model"] == "claude-sonnet-5-5"
+
+
+def test_chat_defaults_to_opus_when_model_is_omitted(client, monkeypatch):
+    calls = []
+    monkeypatch.setattr(api.streaming, "stream_events", fake_stream(calls=calls))
+
+    client.post("/chat", json={"session_id": "s", "message": "hi"})
+
+    assert calls[0]["model"] == config.MODEL
+
+
+def test_chat_rejects_an_unknown_model(client, monkeypatch):
+    monkeypatch.setattr(api.streaming, "stream_events", fake_stream())
+
+    response = client.post("/chat", json={"session_id": "s", "message": "hi", "model": "gpt-4"})
+
+    assert response.status_code == 422
 
 
 def test_chat_streams_events_as_sse(client, monkeypatch):
@@ -89,7 +122,7 @@ def test_chat_sessions_do_not_share_history(client, monkeypatch):
 
 
 def test_failed_run_is_not_added_to_history(client, monkeypatch):
-    def failing(question, history=None):
+    def failing(question, history=None, model=None):
         yield {"event": "start", "data": {"request_id": "r"}}
         yield {"event": "error", "data": {"message": "RuntimeError: boom", "request_id": "r"}}
 

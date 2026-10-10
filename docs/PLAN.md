@@ -258,3 +258,7 @@ What the code does today, where it departs from the diagrams above. Redrawing th
 - **Counting.** `aggregate_database` counts and groups server-side (up to 2000 rows) because `query_database` is capped at 100 rows. The first eval run failed "which Ultimate has the most Crucible tasks" for exactly that reason, and the answer said so honestly ("at least 131") instead of guessing.
 - **Degradation.** Any Chroma error becomes `IndexUnavailable` and the tool falls back to a live keyword search with a warning. On Windows, deleting `.chroma/` while the API is running may fail because the files are open; stop the API first.
 - **Answering the open questions.** The per-Odyssey loop and the right step budget are measured by `python -m evals`; fill them in from your own traces.
+
+## Addendum: model selection (2026-10-10)
+
+The chat UI has a model dropdown (Opus 5.5 default, Sonnet 5.5). `config.MODELS` is the allowlist and `config.MODEL` stays the default. `GET /models` feeds the dropdown, `POST /chat` takes an optional `model` (422 if unknown), and `streaming.stream_events` passes it to `agent_lc.run`. The CLI and the hand-rolled loop still use `config.MODEL`. Checkpoint: ask the same question on both models and compare the `model` field and token counts in the two traces.

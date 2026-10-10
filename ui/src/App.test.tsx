@@ -10,6 +10,7 @@ import { renderWithClient } from "./test/render";
 
 const api = vi.hoisted(() => ({
   fetchHealth: vi.fn(),
+  fetchModels: vi.fn(),
   fetchSources: vi.fn(),
   clearSession: vi.fn(),
 }));
@@ -33,6 +34,13 @@ const DONE = {
 
 beforeEach(async () => {
   api.fetchHealth.mockReset().mockResolvedValue({ status: "ok", model: "claude-test" });
+  api.fetchModels.mockReset().mockResolvedValue({
+    default: "claude-opus-5-5",
+    models: [
+      { id: "claude-opus-5-5", label: "Opus 5.5" },
+      { id: "claude-sonnet-5-5", label: "Sonnet 5.5" },
+    ],
+  });
   api.fetchSources
     .mockReset()
     .mockResolvedValue({ sources: [{ id: "1", name: "Agoge" }], partial: false });
@@ -61,6 +69,29 @@ describe("App", () => {
     renderWithClient(<App />);
 
     expect(await screen.findByText("Backend offline")).toBeInTheDocument();
+  });
+
+  it("defaults the model dropdown to Opus", async () => {
+    renderWithClient(<App />);
+
+    expect(await screen.findByRole("combobox", { name: "Model" })).toHaveValue("claude-opus-5-5");
+  });
+
+  it("sends the selected model with the question", async () => {
+    script([{ type: "done", data: DONE }]);
+    renderWithClient(<App />);
+
+    await userEvent.selectOptions(
+      await screen.findByRole("combobox", { name: "Model" }),
+      "claude-sonnet-5-5",
+    );
+    await userEvent.type(screen.getByLabelText("Message"), "hi{Enter}");
+
+    await waitFor(() =>
+      expect(streamChat).toHaveBeenCalledWith(
+        expect.objectContaining({ model: "claude-sonnet-5-5" }),
+      ),
+    );
   });
 
   it("lists the databases Quack can see", async () => {

@@ -110,7 +110,7 @@ def test_handler_raises_once_cancelled():
 
 
 def test_stream_events_orders_start_progress_token_done(monkeypatch):
-    def fake_run(question, history, handlers, request_id):
+    def fake_run(question, history, handlers, request_id, model=None):
         handler = handlers[0]
         handler.on_tool_start({"name": "search_notion"}, "", run_id=uuid4(), inputs={"query": question})
         handler.on_llm_new_token("x", chunk=chunk([{"type": "text", "text": "hi"}]))
@@ -134,10 +134,24 @@ def test_stream_events_done_carries_usage_and_answer(monkeypatch):
     assert done["data"]["latency_ms"] == 7
 
 
+def test_stream_events_passes_model_through(monkeypatch):
+    seen = {}
+
+    def fake_run(question, history, handlers, request_id, model=None):
+        seen["model"] = model
+        return make_result()
+
+    monkeypatch.setattr(agent_lc, "run", fake_run)
+
+    list(stream_events("q", None, "claude-sonnet-5-5"))
+
+    assert seen["model"] == "claude-sonnet-5-5"
+
+
 def test_stream_events_passes_history_through(monkeypatch):
     seen = {}
 
-    def fake_run(question, history, handlers, request_id):
+    def fake_run(question, history, handlers, request_id, model=None):
         seen["history"] = history
         seen["request_id"] = request_id
         return make_result()
@@ -217,7 +231,7 @@ def test_stream_events_emits_pings_while_waiting(monkeypatch):
 def test_closing_the_stream_cancels_the_worker(monkeypatch):
     cancelled_seen = threading.Event()
 
-    def fake_run(question, history, handlers, request_id):
+    def fake_run(question, history, handlers, request_id, model=None):
         handler = handlers[0]
         try:
             for _ in range(200):

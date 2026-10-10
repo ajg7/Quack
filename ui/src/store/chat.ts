@@ -34,6 +34,8 @@ interface ChatState {
   sessionId: string;
   messages: ChatMessage[];
   isStreaming: boolean;
+  model: string | null;
+  setModel: (model: string) => void;
   send: (text: string) => Promise<void>;
   stop: () => void;
   reset: () => Promise<void>;
@@ -115,6 +117,10 @@ export const useChatStore = create<ChatState>((set, get) => {
     sessionId: newId(),
     messages: [],
     isStreaming: false,
+    model: null,
+    setModel(model) {
+      set({ model });
+    },
     async send(text) {
       const trimmed = text.trim();
       if (!trimmed || get().isStreaming) return;
@@ -135,6 +141,7 @@ export const useChatStore = create<ChatState>((set, get) => {
         await streamChat({
           sessionId: get().sessionId,
           message: trimmed,
+          model: get().model ?? undefined,
           signal: abort.signal,
           onEvent: (event) => handleEvent(assistantId, event),
         });

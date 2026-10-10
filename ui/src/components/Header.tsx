@@ -1,9 +1,13 @@
-import { useHealth } from "../hooks/useBackend";
+import { useHealth, useModels } from "../hooks/useBackend";
 import { useChatStore } from "../store/chat";
 
 export default function Header() {
   const health = useHealth();
   const reset = useChatStore((state) => state.reset);
+  const models = useModels();
+  const model = useChatStore((state) => state.model);
+  const setModel = useChatStore((state) => state.setModel);
+  const isStreaming = useChatStore((state) => state.isStreaming);
   const hasMessages = useChatStore((state) => state.messages.length > 0);
 
   const online = health.isSuccess;
@@ -25,6 +29,21 @@ export default function Header() {
             />
             {health.isPending ? "Connecting" : online ? health.data.model : "Backend offline"}
           </span>
+          {models.isSuccess && (
+            <select
+              aria-label="Model"
+              value={model ?? models.data.default}
+              onChange={(event) => setModel(event.target.value)}
+              disabled={isStreaming}
+              className="rounded-full border border-ghost-line bg-transparent px-3 py-1 text-sm font-semibold text-ghost-ink disabled:opacity-40"
+            >
+              {models.data.models.map((option) => (
+                <option key={option.id} value={option.id} className="bg-[#050E26]">
+                  {option.label}
+                </option>
+              ))}
+            </select>
+          )}
           <button
             type="button"
             onClick={() => void reset()}

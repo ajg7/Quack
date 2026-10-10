@@ -14,6 +14,10 @@ if hasattr(sys.stdout, "reconfigure"):
 
 load_dotenv()
 
+MODELS = {
+    "claude-opus-5-5": "Opus 5.5",
+    "claude-sonnet-5-5": "Sonnet 5.5",
+}
 MODEL = "claude-opus-5-5"
 MAX_TOKENS = 16000
 LLM_TIMEOUT_SECONDS = 120

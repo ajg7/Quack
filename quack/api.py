@@ -4,7 +4,7 @@ from typing import Iterator
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
 
 from quack import config, streaming
 from quack.retrieval import indexer
@@ -27,6 +27,14 @@ sessions = SessionStore()
 class ChatRequest(BaseModel):
     session_id: str = Field(min_length=1, max_length=128)
     message: str = Field(min_length=1, max_length=8000)
+    model: str = config.MODEL
+
+    @field_validator("model")
+    @classmethod
+    def model_is_known(cls, value: str) -> str:
+        if value not in config.MODELS:
+            raise ValueError(f"unknown model {value!r}")
+        return value
 
 
 def format_sse(event: dict) -> str:
@@ -36,6 +44,14 @@ def format_sse(event: dict) -> str:
 @app.get("/health")
 def health() -> dict:
     return {"status": "ok", "model": config.MODEL}
+
+
+@app.get("/models")
+def models() -> dict:
+    return {
+        "default": config.MODEL,
+        "models": [{"id": model_id, "label": label} for model_id, label in config.MODELS.items()],
+    }
 
 
 @app.get("/sources")
@@ -63,7 +79,7 @@ def chat(request: ChatRequest) -> StreamingResponse:
 
     def generate() -> Iterator[str]:
         try:
-            for event in streaming.stream_events(request.message, history):
+            for event in streaming.stream_events(request.message, history, request.model):
                 if event["event"] == "done":
                     sessions.append_turn(request.session_id, request.message, event["data"]["answer"])
                 yield format_sse(event)

@@ -25,6 +25,18 @@ async function mockBackend(page: Page, chat: (route: Route) => Promise<void>) {
   await page.route("**/health", (route) =>
     route.fulfill({ json: { status: "ok", model: "claude-test" }, headers: CORS }),
   );
+  await page.route("**/models", (route) =>
+    route.fulfill({
+      json: {
+        default: "claude-opus-5-5",
+        models: [
+          { id: "claude-opus-5-5", label: "Opus 5.5" },
+          { id: "claude-sonnet-5-5", label: "Sonnet 5.5" },
+        ],
+      },
+      headers: CORS,
+    }),
+  );
   await page.route("**/sources", (route) =>
     route.fulfill({
       json: { sources: [{ id: "1", name: "Agoge" }], partial: false },

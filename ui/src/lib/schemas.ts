@@ -31,6 +31,11 @@ export const errorEventSchema = z.object({
 
 export const healthSchema = z.object({ status: z.string(), model: z.string() });
 
+export const modelsSchema = z.object({
+  default: z.string(),
+  models: z.array(z.object({ id: z.string(), label: z.string() })),
+});
+
 export const sourcesSchema = z.object({
   sources: z.array(z.object({ id: z.string().nullable(), name: z.string() })),
   partial: z.boolean(),
@@ -39,6 +44,7 @@ export const sourcesSchema = z.object({
 export type ProgressEvent = z.infer<typeof progressEventSchema>;
 export type DoneEvent = z.infer<typeof doneEventSchema>;
 export type Health = z.infer<typeof healthSchema>;
+export type Models = z.infer<typeof modelsSchema>;
 export type Sources = z.infer<typeof sourcesSchema>;
 
 export type StreamEvent =
