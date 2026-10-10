@@ -100,8 +100,8 @@ class StreamHandler(BaseCallbackHandler):
         self._finish_tool(run_id, False)
 
 
-def _error_message(exc: Exception) -> str:
-    return f"{type(exc).__name__}: {exc}"[:300]
+def _public_error_message(request_id: str) -> str:
+    return f"Quack hit an internal error and could not finish this answer. Reference: {request_id}."
 
 
 def stream_events(question: str, history: list[dict] | None = None) -> Iterator[dict]:
@@ -130,8 +130,12 @@ def stream_events(question: str, history: list[dict] | None = None) -> Iterator[
         except StreamCancelled:
             pass
         except Exception as e:
+            tracing.emit("stream_error", request_id, error=f"{type(e).__name__}: {e}"[:2000])
             events.put(
-                {"event": "error", "data": {"message": _error_message(e), "request_id": request_id}}
+                {
+                    "event": "error",
+                    "data": {"message": _public_error_message(request_id), "request_id": request_id},
+                }
             )
         finally:
             events.put(_DONE)

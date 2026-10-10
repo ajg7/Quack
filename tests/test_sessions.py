@@ -65,3 +65,60 @@ def test_clear_reports_whether_anything_was_removed():
     assert store.clear("s") is True
     assert store.clear("s") is False
     assert store.get("s") == []
+
+
+class FakeClock:
+    def __init__(self) -> None:
+        self.now = 0.0
+
+    def __call__(self) -> float:
+        return self.now
+
+
+def test_idle_sessions_expire():
+    clock = FakeClock()
+    store = SessionStore(ttl_seconds=100, clock=clock)
+    store.append_turn("s", "q", "r")
+
+    clock.now = 101
+
+    assert store.get("s") == []
+    assert len(store) == 0
+
+
+def test_activity_keeps_a_session_alive():
+    clock = FakeClock()
+    store = SessionStore(ttl_seconds=100, clock=clock)
+    store.append_turn("s", "q", "r")
+
+    clock.now = 80
+    assert store.get("s") != []
+    clock.now = 160
+
+    assert store.get("s") != []
+
+
+def test_expiry_only_removes_idle_sessions():
+    clock = FakeClock()
+    store = SessionStore(ttl_seconds=100, clock=clock)
+    store.append_turn("old", "q", "r")
+    clock.now = 90
+    store.append_turn("fresh", "q", "r")
+    clock.now = 150
+
+    assert store.get("old") == []
+    assert store.get("fresh") != []
+
+
+def test_least_recently_used_session_is_evicted_at_capacity():
+    clock = FakeClock()
+    store = SessionStore(max_sessions=2, clock=clock)
+    store.append_turn("a", "q", "r")
+    store.append_turn("b", "q", "r")
+    store.get("a")
+    store.append_turn("c", "q", "r")
+
+    assert len(store) == 2
+    assert store.get("b") == []
+    assert store.get("a") != []
+    assert store.get("c") != []

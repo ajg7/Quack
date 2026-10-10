@@ -16,6 +16,3 @@ briefings/
 
 # Trace output
 traces/
-
-# graphify output
-graphify-out/

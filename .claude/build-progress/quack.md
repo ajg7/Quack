@@ -1,22 +1,23 @@
 # Quack — Progress
 
 **Plan:** docs/PLAN.md
-**Last touched:** 2026-10-04
+**Last touched:** 2026-10-10
 
 ## Phase 1 — The hand-rolled tool loop  [code complete, checkpoints SKIPPED]
 - [~] 1.1 One question, one tool, end to end — autopilot — verified live; **checkpoint SKIPPED**
 - [~] 1.2 A Notion client that respects the limit — AJ started a sidekick draft, then switched to autopilot; Claude wrote it — 3 req/s limiter, Retry-After, partial results; **checkpoint SKIPPED**
 - [~] 1.3 Trace events from the first line — autopilot — traces/quack.jsonl; **checkpoint SKIPPED**
 
-## Phase 2 — Port to LangChain, add tools and a UI  [starting]
+## Phase 2 — Port to LangChain, add tools and a UI  [code complete, checkpoints NOT done]
 - [~] 2.1 Parity port — started sidekick (guided), AJ asked Claude to implement -> autopilot — `python -m quack --lc "q"`; parity verified (1,811 in / same events); **checkpoint SKIPPED**
 - [~] 2.2 Three tools Claude chooses between well — started sidekick (guided); AJ asked Claude to implement steps 2-8 -> autopilot — code complete, live-verified on 2 questions; **checkpoint (8 questions) NOT done**
-- [~] 2.3 Streaming chat with progress — autopilot, **backend done** (FastAPI + SSE + sessions + tests, live-verified); **UI half: AJ is writing it in sidekick mode (guided, snippets in chat).** Claude set up ui/ boilerplate only (Vite + React 19 + TS, TanStack Query, react-markdown, oxlint + Prettier (double quotes), Vitest + React Testing Library + jsdom, Playwright). Reference implementation built and verified OUTSIDE the repo at %TEMP%\quack-ui-ref (38 unit/component tests, 5 mocked e2e, 2 real-backend e2e incl. killing the backend mid-answer). Checkpoint (kill backend mid-answer, make the UI say something true) not done by AJ
+- [~] 2.3 Streaming chat with progress — autopilot (AJ: "implement phase 2 completely" on 2026-10-10); backend + UI done. UI: ui/src/{lib,store,hooks,components} (zustand store, axios+zod api, fetch-event-source stream, TanStack Form composer, TanStack Query health/sources). 38 unit/component tests, 5 mocked e2e, 2 real-backend e2e (QUACK_E2E_REAL=1, includes killing the backend mid-answer); npm run check green. LLM call now has timeout 120s + 2 retries (config.LLM_TIMEOUT_SECONDS / LLM_MAX_RETRIES). **Checkpoint (kill backend mid-answer, predict what the UI shows, make it say something true) NOT done by AJ**
 
 ## Phase 3 — Multi-step reasoning under a budget  [not started]
 ## Phase 4 — Hybrid retrieval with Chroma  [not started]
 
 ## Code written by Claude
+- 2.3 UI (2026-10-10): quack-ui src/lib/{schemas,api,stream}.ts, src/store/chat.ts, src/hooks/useBackend.ts, src/components/*, tests, e2e/chat.spec.ts, e2e/real-backend.spec.ts
 - 1.1: `quack/agent.py` loop body
 - 1.2: `quack/integrations/notion.py` (RateLimiter, _request, _paginate, NotionResults, stats); `search_notion` now returns {"results", "partial", "warning"}; config constants
 - 1.3: `quack/tracing.py`, tracing wired into `agent.ask`
@@ -32,9 +33,9 @@
 - Backend additions for the UI: progress events now carry `args`; GET /sources lists shared databases (502 on Notion failure).
 - fetch-event-source gotchas: set openWhenHidden:true (else hiding the tab re-POSTs the question); provide onerror that throws (else it retries forever); abort RESOLVES the promise (check signal.aborted). axios fetch adapter passes a Request object to fetch (test mocks must normalize) and caches the first fetch it sees.
 - ui/ tooling notes: repo path contains '&' so npm scripts call tools via `node node_modules/<pkg>/...` (shims break); Playwright workers=1 (parallel Chromium launches hang on this machine); lint is oxlint (not ESLint), double quotes enforced by Prettier. Scripts: dev, build, typecheck, lint, format, format:check, test, e2e, check.
-- Finding: no timeout on the LLM call. A hung upstream request makes /chat send only `ping`s for up to the Anthropic client default (10 min); UI would sit on 'Thinking...'. Consider ChatAnthropic(timeout=...) / max_retries and a step budget (Phase 3).
+- (Resolved 2026-10-10: timeout/retries added.) Finding: no timeout on the LLM call. A hung upstream request makes /chat send only `ping`s for up to the Anthropic client default (10 min); UI would sit on 'Thinking...'. Consider ChatAnthropic(timeout=...) / max_retries and a step budget (Phase 3).
 - A uvicorn started via PowerShell Start-Process (hidden) hung on the agent call while the same server started from bash worked; undiagnosed.
-- Phase 2 is NOT complete: UI half of 2.3 remains, so no phase commit/push yet. Commit policy: per phase. Repo ajg7/Quack is PUBLIC; user pushes to main directly; plan: branch first, exclude tests/fixtures/{search,odysseys_rows}.json (real workspace data) and make dependent tests skip, include CLAUDE.md.
+- Phase 2 code is complete as of 2026-10-10 but its three checkpoints are not done; nothing committed or pushed yet. Commit policy: per phase. Repo ajg7/Quack is PUBLIC; user pushes to main directly; plan: branch first, exclude tests/fixtures/{search,odysseys_rows}.json (real workspace data) and make dependent tests skip, include CLAUDE.md.
 - Integration now sees 5 data sources (Agoge, Crucible, Inferno, Odysseys, Ultimates); legacy Odysseys/Horizons/Contribution Naming were unshared. Agoge IDs in config.py updated (old ones 404'd). tests/fixtures/odysseys_rows.json and search.json still hold the OLD legacy Odysseys rows.
 - 2.3 backend: quack/api.py (POST /chat SSE, GET /health, DELETE /sessions/{id}, CORS for Vite :5173), quack/streaming.py (StreamHandler + stream_events, worker thread + queue, keepalive pings, cancel on disconnect), quack/sessions.py (in-memory, 20-message cap), agent_lc.run()/RunResult. SSE events: start, progress{status,step,tool,message}, token{text}, done{answer,usage...}, error{message}, ping.
 - UI contract for later: a stream that ends without `done` or `error` means the backend died; the UI must say so truthfully (2.3 checkpoint).
@@ -49,4 +50,4 @@
 - AJ's own 1.2 draft is saved at `.claude/backup/notion.py.aj-draft-1.2`.
 - Run with `.venv\Scripts\python.exe` (system python lacks packages).
 - `AJ_GEBARA_PAGE_ID` ranking in `search_notion` never fires on live data (0 of 1,016 results are direct children). Decide before 2.2.
-- CLAUDE.md "Current status" is stale; update when checkpoints pass.
+- CLAUDE.md "Current status" updated 2026-10-10.

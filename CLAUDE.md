@@ -17,14 +17,11 @@ This is a learning project, so how Claude helps matters as much as what gets bui
 
 ## Current status
 
-Phase 1, Milestone 1.1 (hand-rolled tool loop).
+Phase 2 code complete (2026-10-10); next is Phase 3, Milestone 3.1 (eval set).
 
-- Done: `quack/config.py`, `scripts/smoke_test.py` (Anthropic), `scripts/notion_smoke_test.py` (Notion auth and visibility).
-- In progress: `query_data_source` in the stray top-level `integration/notion.py`. It belongs in `quack/integrations/notion.py`, and `integration/` should go once it's moved. Known gaps: no pagination, it prints and returns `[]` on errors instead of raising, `import config` should be `from quack import config`, and the stubs call `NotImplemented()` instead of `raise NotImplementedError`.
-- Empty: `agent.py`, `tools/`, `__main__.py`, `prompts/system.md`, `tests/`.
-- Unverified: `MODEL` in `config.py`. Anthropic model IDs use hyphens, so confirm it with the smoke test.
-
-Update this section when a milestone closes.
+- Done: hand-rolled loop (`quack/agent.py`), Notion client, tracing, LangChain port (`--lc`), three tools, FastAPI + SSE chat API, React chat UI in `ui/` (`npm run check` and mocked e2e green; real-backend e2e behind `QUACK_E2E_REAL=1`).
+- Checkpoints not done (code finished, comprehension checks skipped or pending): 1.1, 1.2, 1.3, 2.1, 2.2 (8-question tool-choice test), 2.3 (kill the backend mid-answer). Details in `.claude/build-progress/quack.md`.
+- Known Phase 3 inputs: `search_notion` returns every match (large token cost); no step or request budget yet; `AJ_GEBARA_PAGE_ID` ranking never fires on live data.
 
 ## Layout (Phase 1 target)
 
@@ -97,13 +94,3 @@ python -m pytest                        # add pytest to requirements first
 - Read-only: Quack never writes to Notion in the MVP. No `PATCH`/`POST` to pages or blocks. Queries and search only.
 - Unit-test pure functions with fixtures saved from real Notion responses (`tests/fixtures/`). Don't mock the Notion API. The smoke tests cover the live path.
 - The repo has mixed CRLF/LF line endings. Keep a file's existing endings, and don't reformat whole files.
-
-## graphify
-
-This project has a knowledge graph at graphify-out/ with god nodes, community structure, and cross-file relationships.
-
-Rules:
-- For codebase questions, first run `graphify query "<question>"` when graphify-out/graph.json exists. Use `graphify path "<A>" "<B>"` for relationships and `graphify explain "<concept>"` for focused concepts. These return a scoped subgraph, usually much smaller than GRAPH_REPORT.md or raw grep output.
-- If graphify-out/wiki/index.md exists, use it for broad navigation instead of raw source browsing.
-- Read graphify-out/GRAPH_REPORT.md only for broad architecture review or when query/path/explain do not surface enough context.
-- After modifying code, run `graphify update .` to keep the graph current (AST-only, no API cost).

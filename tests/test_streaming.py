@@ -160,19 +160,40 @@ def test_stream_events_turns_exceptions_into_an_error_event(monkeypatch):
     events = list(stream_events("q"))
 
     assert [e["event"] for e in events] == ["start", "error"]
-    assert "Notion exploded" in events[-1]["data"]["message"]
-    assert events[-1]["data"]["request_id"] == events[0]["data"]["request_id"]
+    request_id = events[0]["data"]["request_id"]
+    assert events[-1]["data"]["request_id"] == request_id
+    assert request_id in events[-1]["data"]["message"]
 
 
-def test_stream_events_truncates_long_error_messages(monkeypatch):
+def test_stream_error_message_does_not_leak_exception_details(monkeypatch):
     def fake_run(*args, **kwargs):
-        raise RuntimeError("x" * 5000)
+        raise RuntimeError("secret-token-abc123 database_id=deadbeef")
 
     monkeypatch.setattr(agent_lc, "run", fake_run)
 
-    error = list(stream_events("q"))[-1]
+    message = list(stream_events("q"))[-1]["data"]["message"]
 
-    assert len(error["data"]["message"]) <= 300
+    assert "secret-token" not in message
+    assert "RuntimeError" not in message
+    assert len(message) <= 300
+
+
+def test_stream_error_detail_goes_to_the_trace(monkeypatch):
+    emitted = []
+
+    def fake_run(*args, **kwargs):
+        raise RuntimeError("Notion exploded")
+
+    monkeypatch.setattr(agent_lc, "run", fake_run)
+    monkeypatch.setattr(
+        streaming.tracing, "emit", lambda event, rid, **fields: emitted.append((event, rid, fields))
+    )
+
+    events = list(stream_events("q"))
+
+    assert emitted[0][0] == "stream_error"
+    assert emitted[0][1] == events[0]["data"]["request_id"]
+    assert "Notion exploded" in emitted[0][2]["error"]
 
 
 def test_stream_events_emits_pings_while_waiting(monkeypatch):

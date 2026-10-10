@@ -1,7 +1,15 @@
+import Composer from "./components/Composer";
+import Header from "./components/Header";
+import MessageList from "./components/MessageList";
+
 export default function App() {
   return (
-    <main className="grid min-h-screen place-items-center bg-page">
-      <h1 className="font-sans text-5xl font-extrabold tracking-tight text-brand">Quack</h1>
-    </main>
+    <div className="flex min-h-screen flex-col bg-page">
+      <Header />
+      <main className="flex flex-1 flex-col">
+        <MessageList />
+      </main>
+      <Composer />
+    </div>
   );
 }

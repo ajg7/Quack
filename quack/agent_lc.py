@@ -54,7 +54,12 @@ def _build_model(streaming: bool = False) -> ChatAnthropic:
     if workspace_id:
         kwargs["default_headers"] = {"anthropic-workspace-id": workspace_id}
     return ChatAnthropic(
-        model=config.MODEL, max_tokens=config.MAX_TOKENS, streaming=streaming, **kwargs
+        model=config.MODEL,
+        max_tokens=config.MAX_TOKENS,
+        streaming=streaming,
+        timeout=config.LLM_TIMEOUT_SECONDS,
+        max_retries=config.LLM_MAX_RETRIES,
+        **kwargs,
     )
 
 
