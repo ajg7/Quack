@@ -12,7 +12,8 @@
     "typescript/no-explicit-any": "error",
     "typescript/consistent-type-imports": "error",
     "no-console": "warn",
-    "eqeqeq": "error"
+    "eqeqeq": "error",
+    "no-nested-ternary": "error"
   },
   "env": {
     "browser": true,

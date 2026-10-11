@@ -11,6 +11,13 @@ export default function Header() {
   const hasMessages = useChatStore((state) => state.messages.length > 0);
 
   const online = health.isSuccess;
+  const activeModel = model ?? models.data?.default ?? health.data?.model;
+
+  function statusLabel() {
+    if (health.isPending) return "Connecting";
+    if (!online) return "Backend offline";
+    return activeModel;
+  }
 
   return (
     <header className="border-b border-header-line bg-header">
@@ -27,7 +34,7 @@ export default function Header() {
               aria-hidden="true"
               className={`size-2 rounded-full ${online ? "bg-ok" : "bg-danger"}`}
             />
-            {health.isPending ? "Connecting" : online ? health.data.model : "Backend offline"}
+            {statusLabel()}
           </span>
           {models.isSuccess && (
             <select

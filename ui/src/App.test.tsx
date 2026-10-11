@@ -47,6 +47,7 @@ beforeEach(async () => {
   api.clearSession.mockReset().mockResolvedValue(undefined);
   streamChat.mockReset();
   await useChatStore.getState().reset();
+  useChatStore.setState({ model: null });
 });
 
 function script(events: StreamEvent[], failure?: Error) {
@@ -61,7 +62,20 @@ describe("App", () => {
     renderWithClient(<App />);
 
     expect(screen.getByRole("heading", { name: "Quack" })).toBeInTheDocument();
-    expect(await screen.findByText("claude-test")).toBeInTheDocument();
+    expect(
+      await screen.findByText("claude-opus-5-5", { selector: "[role=status]" }),
+    ).toBeInTheDocument();
+  });
+
+  it("updates the status badge when the model is switched", async () => {
+    renderWithClient(<App />);
+
+    await userEvent.selectOptions(
+      await screen.findByRole("combobox", { name: "Model" }),
+      "claude-sonnet-5-5",
+    );
+
+    expect(screen.getByRole("status")).toHaveTextContent("claude-sonnet-5-5");
   });
 
   it("says the backend is offline when health fails", async () => {
