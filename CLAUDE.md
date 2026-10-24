@@ -24,6 +24,7 @@ All four phases are code complete (2026-10-10). AJ asked Claude to finish the pr
 - Phase 3 additions: per-question `Budget` in `quack/budget.py` (tool steps, Notion requests, deadline; a trip makes tools return a stop instruction and forces a final answer), TTL response cache in the Notion client, `search_notion` limit + `truncated`, `aggregate_database` (server-side counts and group-by over up to 2000 rows; added after the first eval run failed a counting question on the 100-row cap), parallel tool calls in the raw loop, `python -m evals` runner scoring answer and trace separately.
 - Phase 4 additions: `quack/retrieval/` (chunker, Chroma store, incremental indexer), `quack/router.py` (route per tool call, staleness check, live fallback), `semantic_search` tool, `python -m quack index`, `GET /index`. The index lives in `.chroma/` (gitignored, derived data). First eval run on 2026-10-10: 14/15 correct, then 15/15 after `aggregate_database`; the 15 questions are Claude-drafted from live data and marked `"draft": true` until AJ verifies them.
 - Still open: `AJ_GEBARA_PAGE_ID` ranking never fires on live data.
+- Phase 5 (Result graphs, React Flow) planned 2026-10-24 in `docs/PLAN.md`, not started. AJ writes all of its code, the UI included. Claude guides, and writes tests, docs, config constants and dependency installs.
 
 ## Layout (Phase 1 target)
 
