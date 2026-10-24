@@ -85,6 +85,8 @@ cd ui && npm run dev                    # chat UI on :5173 (needs the API runnin
                                         # UI stack: React+TS, Tailwind v4, Zustand, axios, @microsoft/fetch-event-source, TanStack Query
 cd ui && npm run check                  # typecheck + oxlint + prettier + vitest
 cd ui && npm run e2e                    # Playwright (mocked backend)
+docker compose up -d --build           # run API + UI in Docker (UI at http://quack.localhost, API on :8000)
+docker compose down                     # stop and remove the containers
 python -m pytest
 python -m quack index [--full] [--limit N]   # build/refresh the Chroma index (read-only against Notion)
 python -m evals [--ids a,b] [--repeat N]     # score Quack against evals/questions.json (live API)

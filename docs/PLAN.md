@@ -262,3 +262,7 @@ What the code does today, where it departs from the diagrams above. Redrawing th
 ## Addendum: model selection (2026-10-10)
 
 The chat UI has a model dropdown (Opus 5.5 default, Sonnet 5.5). `config.MODELS` is the allowlist and `config.MODEL` stays the default. `GET /models` feeds the dropdown, `POST /chat` takes an optional `model` (422 if unknown), and `streaming.stream_events` passes it to `agent_lc.run`. The CLI and the hand-rolled loop still use `config.MODEL`. Checkpoint: ask the same question on both models and compare the `model` field and token counts in the two traces.
+
+## Addendum: Docker (2026-10-24)
+
+`docker compose up -d --build` runs Quack in two containers so nothing has to be started by hand. `api` is built from `Dockerfile` (uvicorn on 8000, secrets from `.env` via `env_file`, never copied into the image). `ui` is built from `ui/Dockerfile` (a Node stage runs `npm run build`, then nginx serves `dist/` on host port 80 at `http://quack.localhost`; browsers resolve `*.localhost` to the local machine with no hosts-file edit, and `CORS_ORIGINS` lists that origin). `.chroma/` and `traces/` are bind-mounted so the index and traces survive rebuilds. `restart: unless-stopped` brings both back whenever Docker Desktop starts. Code changes need `docker compose up -d --build` again; there is no hot reload. Checkpoint: explain the difference between an image and a container, and why `.env` is in `.dockerignore`.

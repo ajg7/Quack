@@ -61,7 +61,12 @@ SESSION_MAX_COUNT = 200
 SESSION_TTL_SECONDS = 3600
 TURN_LOCK_SECONDS = 300
 SSE_KEEPALIVE_SECONDS = 15
-CORS_ORIGINS = ["http://localhost:5173", "http://127.0.0.1:5173"]
+CORS_ORIGINS = [
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+    "http://quack.localhost",
+    "http://localhost",
+]
 
 TRACE_DIR = Path(__file__).resolve().parent.parent / "traces"
 EVAL_DIR = Path(__file__).resolve().parent.parent / "evals"
