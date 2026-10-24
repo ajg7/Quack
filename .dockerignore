@@ -1,0 +1,11 @@
+.env
+.venv
+.git
+.chroma
+traces
+ui
+**/__pycache__
+.pytest_cache
+agent-transcripts
+.claude
+.cmem-projects

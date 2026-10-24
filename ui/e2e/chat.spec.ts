@@ -61,7 +61,7 @@ test("the app loads and shows the backend", async ({ page }) => {
 
   await expect(page).toHaveTitle("Quack");
   await expect(page.getByRole("heading", { name: "Quack" })).toBeVisible();
-  await expect(page.getByText("claude-test")).toBeVisible();
+  await expect(page.getByRole("status").and(page.getByText("claude-opus-5-5"))).toBeVisible();
   await expect(page.getByText("Agoge", { exact: true })).toBeVisible();
 });
 
@@ -145,4 +145,85 @@ test("New chat clears the conversation", async ({ page }) => {
   await page.getByRole("button", { name: "New chat" }).click();
 
   await expect(page.getByText("Ask about your Notion")).toBeVisible();
+});
+
+test("Send is disabled until there is text", async ({ page }) => {
+  await mockBackend(page, async (route) => route.abort());
+  await page.goto("/");
+
+  await expect(page.getByRole("button", { name: "Send" })).toBeDisabled();
+  await page.getByLabel("Message").fill("hi");
+  await expect(page.getByRole("button", { name: "Send" })).toBeEnabled();
+});
+
+test("Shift+Enter adds a newline instead of sending", async ({ page }) => {
+  let sent = false;
+  await mockBackend(page, async (route) => {
+    sent = true;
+    await route.abort();
+  });
+  await page.goto("/");
+
+  await page.getByLabel("Message").fill("line one");
+  await page.getByLabel("Message").press("Shift+Enter");
+  await page.getByLabel("Message").pressSequentially("line two");
+
+  await expect(page.getByLabel("Message")).toHaveValue("line one\nline two");
+  expect(sent).toBe(false);
+});
+
+test("the selected model is sent with the question", async ({ page }) => {
+  let body: { model?: string; message?: string } = {};
+  await mockBackend(page, async (route) => {
+    body = route.request().postDataJSON();
+    await route.fulfill({
+      status: 200,
+      headers: { ...CORS, "Content-Type": "text/event-stream" },
+      body: [frame("start", { request_id: "r1" }), frame("done", DONE)].join(""),
+    });
+  });
+  await page.goto("/");
+
+  await page.getByLabel("Model").selectOption("claude-sonnet-5-5");
+  await page.getByLabel("Message").fill("rituals?");
+  await page.getByLabel("Message").press("Enter");
+
+  await expect(page.getByText("10", { exact: true })).toBeVisible();
+  expect(body.model).toBe("claude-sonnet-5-5");
+  expect(body.message).toBe("rituals?");
+});
+
+test("Stop ends a running answer and says so", async ({ page }) => {
+  await mockBackend(page, () => new Promise<void>(() => {}));
+  await page.goto("/");
+
+  await page.getByLabel("Message").fill("rituals?");
+  await page.getByLabel("Message").press("Enter");
+  await page.getByRole("button", { name: "Stop" }).click();
+
+  await expect(page.getByText("Stopped before finishing.")).toBeVisible();
+  await expect(page.getByLabel("Message")).toBeEnabled();
+});
+
+test("a partial sources list is flagged", async ({ page }) => {
+  await mockBackend(page, async (route) => route.abort());
+  await page.route("**/sources", (route) =>
+    route.fulfill({
+      json: { sources: [{ id: "1", name: "Agoge" }], partial: true },
+      headers: CORS,
+    }),
+  );
+  await page.goto("/");
+
+  await expect(page.getByText("(list may be incomplete)")).toBeVisible();
+});
+
+test("a failing sources endpoint shows an alert", async ({ page }) => {
+  await mockBackend(page, async (route) => route.abort());
+  await page.route("**/sources", (route) =>
+    route.fulfill({ status: 500, json: { detail: "boom" }, headers: CORS }),
+  );
+  await page.goto("/");
+
+  await expect(page.getByRole("alert")).toContainText("Could not load the list of Notion databases");
 });

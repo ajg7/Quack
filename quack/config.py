@@ -56,12 +56,21 @@ QUERY_MAX_LIMIT = 100
 AGGREGATE_MAX_ROWS = 2000
 PAGE_CONTENT_MAX_CHARS = 20000
 
+GRAPH_MAX_NODES = 150
+GRAPH_MAX_RESOLVE = 20
+SESSION_RESULT_TURNS = 5
+
 CHAT_HISTORY_MAX_MESSAGES = 20
 SESSION_MAX_COUNT = 200
 SESSION_TTL_SECONDS = 3600
 TURN_LOCK_SECONDS = 300
 SSE_KEEPALIVE_SECONDS = 15
-CORS_ORIGINS = ["http://localhost:5173", "http://127.0.0.1:5173"]
+CORS_ORIGINS = [
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+    "http://quack.localhost",
+    "http://localhost",
+]
 
 TRACE_DIR = Path(__file__).resolve().parent.parent / "traces"
 EVAL_DIR = Path(__file__).resolve().parent.parent / "evals"

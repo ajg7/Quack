@@ -1,0 +1,18 @@
+services:
+  api:
+    build: .
+    env_file: .env
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./.chroma:/app/.chroma
+      - ./traces:/app/traces
+    restart: unless-stopped
+
+  ui:
+    build: ./ui
+    ports:
+      - "80:80"
+    depends_on:
+      - api
+    restart: unless-stopped

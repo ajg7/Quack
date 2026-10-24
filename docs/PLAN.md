@@ -262,3 +262,47 @@ What the code does today, where it departs from the diagrams above. Redrawing th
 ## Addendum: model selection (2026-10-10)
 
 The chat UI has a model dropdown (Opus 5.5 default, Sonnet 5.5). `config.MODELS` is the allowlist and `config.MODEL` stays the default. `GET /models` feeds the dropdown, `POST /chat` takes an optional `model` (422 if unknown), and `streaming.stream_events` passes it to `agent_lc.run`. The CLI and the hand-rolled loop still use `config.MODEL`. Checkpoint: ask the same question on both models and compare the `model` field and token counts in the two traces.
+
+## Addendum: Docker (2026-10-24)
+
+`docker compose up -d --build` runs Quack in two containers so nothing has to be started by hand. `api` is built from `Dockerfile` (uvicorn on 8000, secrets from `.env` via `env_file`, never copied into the image). `ui` is built from `ui/Dockerfile` (a Node stage runs `npm run build`, then nginx serves `dist/` on host port 80 at `http://quack.localhost`; browsers resolve `*.localhost` to the local machine with no hosts-file edit, and `CORS_ORIGINS` lists that origin). `.chroma/` and `traces/` are bind-mounted so the index and traces survive rebuilds. `restart: unless-stopped` brings both back whenever Docker Desktop starts. Code changes need `docker compose up -d --build` again; there is no hot reload. Checkpoint: explain the difference between an image and a container, and why `.env` is in `.dockerignore`.
+
+---
+
+## Phase 5 — Result graphs (added 2026-10-24)
+**Goal:** After Quack lists Agoge rituals, Crucible tasks or both, AJ can type "map those on a graph" or click **Map these** under the answer. An interactive React Flow graph then appears inline in the message, with an Expand to full screen. Hubs are related pages (Ultimates, Odysseys), leaves are the rows, and edges come from relation properties.
+**Concept in focus:** Structured side channels next to a lossy transcript, and keeping the model out of deterministic work.
+**Builds:** A per-turn result collector, a pure graph builder, `POST /graph`, a `map_results` tool using LangChain's content-and-artifact split, a `graph` SSE event, and the React Flow card.
+**Ownership:** AJ writes all of the code, the UI included. Claude writes this entry, config constants, dependency installs, tests and docs. The full file-by-file plan is in AJ's plan notes (2026-10-24).
+
+### Milestone 5.1 — Keep each turn's results
+`normalize_row` gains `title` and `data_source_id`. A pure `relation_ids(raw_properties)` keeps relation ids apart from multi-selects. A new `quack/results.py` mirrors `budget.py` (a contextvar collector, a no-op when inactive), and `query_database` and `get_page` record into it. `RunResult` carries `results`, `SessionStore` keeps the last `SESSION_RESULT_TURNS` keyed by `request_id`, and the `done` event gains `has_results`.
+
+- **Concept:** History stores text only, so ids, relations and `Done` flags vanish after each turn.
+- **Checkpoint:** Explain why putting rows into chat history would be worse than this side channel, in tokens per turn and in what Claude re-reads.
+
+### Milestone 5.2 — Graph builder + `POST /graph`
+`quack/graph.py` provides `build_graph(entities, group_by, resolve)`. It builds item, hub and group nodes plus edges labeled by relation name, is generic over relation properties, and caps at `GRAPH_MAX_NODES`. The resolver fetches unknown relation targets through the shared client (cached, charged to the budget, at most `GRAPH_MAX_RESOLVE`). `POST /graph {session_id, request_id, group_by?}` serves the button path with no model call.
+
+- **Concept:** Claude decides what to map, and code builds the graph.
+- **Checkpoint:** Predict the Notion request count for "map today's rituals" with the cache cold and warm, then check the trace.
+
+### Milestone 5.3 — `map_results` tool + `graph` SSE event
+A `map_results(turns_back, include_current, group_by)` tool is registered as an artifact tool (`response_format="content_and_artifact"`): the model gets a short summary and the UI gets the graph. `StreamHandler.on_tool_end` emits a `graph` event from `ToolMessage.artifact`. The hand-rolled CLI loop filters artifact tools out. The system prompt says to call it for map, graph or visualize requests and to answer in a sentence or two.
+
+- **Concept:** The content-and-artifact split, because the graph must never enter the context window.
+- **Checkpoint:** Use the trace's `output_chars` to show Claude saw only the summary, and explain what happens without the split.
+
+### Milestone 5.4 — React Flow rendering
+`@xyflow/react` and `@dagrejs/dagre` are added. The pieces:
+- A pure `layoutGraph` lays out the graph with dagre.
+- Memoized `HubNode` and `ItemNode` are registered in a module-scope `nodeTypes`.
+- A lazy-loaded `ResultGraph` derives its layout in `useMemo`.
+- A `GraphCard` with an explicit height opens a native `<dialog>` full-screen view.
+- **Map these** preloads the chunk on hover or focus.
+- Quack tokens are mapped onto React Flow's CSS variables in light and dark.
+
+- **Concept:** A canvas library inside React: stable node types, derived layout, and code that loads only when it's needed.
+- **Checkpoint:** Point at the separate `@xyflow/react` chunk in `npm run build` output, then explain cold why `nodeTypes` must be module-scoped and what breaks with a zero-height parent.
+
+**Phase 5 is done when** both trigger paths render a correct graph for "today's Agoge rituals plus In progress Crucible tasks", the pytest, Vitest and Playwright suites are green, and the four checkpoints above are done.
